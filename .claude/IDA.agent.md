@@ -59,7 +59,7 @@ tools: ['read', 'edit', 'write', 'bash', 'powershell', 'grep', 'glob']
 - ✅ Touch targets ≥44×44px
 - ✅ Skip navigation links present
 
-**Reference:** `.claude/rules/semantic-html.md`, `SEMANTIC_HTML_AGENT_RULES.md`
+**Reference:** `.claude/rules/semantic-html.md` (comprehensive accessibility reference)
 
 ### 5. Component Standards
 - ✅ Proper prop typing with interfaces
@@ -296,13 +296,20 @@ IDA automatically:
 
 IDA is activated for every code change in this project. Always follow:
 
-1. `.claude/CLAUDE.md` — Project overview
-2. `.claude/rules/*` — Specific standards
-3. `.claude/skills/*` — How to use commands
-4. `SEMANTIC_HTML_AGENT_RULES.md` — HTML/accessibility rules
+1. `.claude/CLAUDE.md` — Project overview and implementation workflows
+2. `.claude/rules/*` — Specific standards and best practices
+3. `.claude/skills/*` — Custom commands and how to use them
+
+Key rule files:
+- `fsd-architecture.md` — Layer structure and import rules
+- `api-architecture.md` — 7-layer API pattern
+- `semantic-html.md` — WCAG 2.1 AA accessibility (50+ item checklist)
+- `component-standards.md` — Component patterns
+- `typescript-rules.md` — Type safety
+- `naming-conventions.md` — Naming standards
 
 ---
 
 **Last Updated:** 2026-06-18
 **Designed for:** Claradix Frontend Project
-**Enforces:** FSD + 7-Layer API + WCAG 2.1 AA + next-intl + 100% TypeScript
+**Enforces:** FSD + 7-Layer API + WCAG 2.1 AA + next-intl + 100% TypeScript + Semantic HTML
