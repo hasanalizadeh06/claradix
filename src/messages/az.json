@@ -1,0 +1,11 @@
+{
+  "HomePage": {
+    "welcome": "Claradix'ə Xoş Gəldiniz",
+    "subtitle": "Müasir, əlçatan və yüksək performanslı ön tərəf",
+    "description": "Claradix, NextJS, TypeScript və ən yaxşı təcrübələr ilə qurulan müasir ön tərəf tətbiqisidir. Yaxşı mimar olunmuş, əlçatan və tip-təhlükəsiz bir tətbiqin gücünü yaşayın.",
+    "feature1": "Sürətli və optimallaşdırılmış",
+    "feature2": "Əlçatan və semantik",
+    "feature3": "Tip-təhlükəsiz və güvənli",
+    "footer": "Claradix komandasının diqqətli əməyi ilə hazırlanmışdır"
+  }
+}

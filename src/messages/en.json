@@ -1,0 +1,11 @@
+{
+  "HomePage": {
+    "welcome": "Welcome to Claradix",
+    "subtitle": "Modern, accessible, and high-performance frontend",
+    "description": "Claradix is a modern frontend application built with NextJS, TypeScript, and best practices. Experience the power of a well-architected, accessible, and type-safe application.",
+    "feature1": "Fast and optimized",
+    "feature2": "Accessible and semantic",
+    "feature3": "Type-safe and secure",
+    "footer": "Made with care by the Claradix team"
+  }
+}
