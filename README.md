@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Claradix Frontend
 
-## Getting Started
+Modern, accessible, and high-performance NextJS frontend application with Feature-Sliced Design architecture.
 
-First, run the development server:
+## 🏗️ Technology Stack
+
+- **Framework:** NextJS 14+ (App Router)
+- **Architecture:** Feature-Sliced Design (FSD)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS
+- **State:** Zustand
+- **Forms:** React Hook Form + Zod
+- **API:** Axios + React Query v5 (7-layer pattern)
+- **Multilanguage:** next-intl (Azerbaijani, English, Russian)
+- **Testing:** Jest + React Testing Library (100% coverage)
+- **Accessibility:** WCAG 2.1 AA + Semantic HTML
+
+## 📖 Documentation
+
+See [.claude/CLAUDE.md](.claude/CLAUDE.md) for complete project documentation.
+
+**Key Rules:**
+- [FSD Architecture](.claude/rules/fsd-architecture.md)
+- [API Architecture](.claude/rules/api-architecture.md)
+- [Naming Conventions](.claude/rules/naming-conventions.md)
+- [Semantic HTML & Accessibility](.claude/rules/semantic-html.md)
+- [Component Standards](.claude/rules/component-standards.md)
+- [TypeScript Rules](.claude/rules/typescript-rules.md)
+
+## 🚀 Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧪 Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Lint & format
+npm run lint
+npm run format
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Type check
+npm run type-check
 
-## Learn More
+# Run tests
+npm run test
+npm run test:coverage
 
-To learn more about Next.js, take a look at the following resources:
+# Full validation before commit
+/build-project
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Custom Commands
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Create new entity (types + API + hooks + widget)
+/create-entity product
 
-## Deploy on Vercel
+# Create new page
+/create-page products
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Sync translations across all languages
+/sync-translations
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Full build validation
+/build-project
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── app/[locale]/          # NextJS pages & routing
+├── widgets/               # Complex page sections
+├── features/              # User actions & features
+├── entities/              # Business logic entities
+└── shared/                # Reusable code (UI, API, utils)
+
+.claude/
+├── CLAUDE.md             # Complete project guide
+├── settings.json         # Configuration
+├── rules/                # Project rules (FSD, API, etc.)
+└── skills/               # Custom commands
+```
+
+## 🔒 Key Principles
+
+1. **FSD Architecture** — Layers: app → widgets → features → entities → shared
+2. **7-Layer API Pattern** — Axios → requests → React Query → entity API → hooks → widgets
+3. **WCAG 2.1 AA** — Accessible, semantic HTML
+4. **100% TypeScript** — Strict mode, no `any`
+5. **100% Test Coverage** — Enforced in build
+6. **Multilingual** — All text translated (next-intl)
+
+## 🌍 Internationalization
+
+All UI text uses `useTranslations()`:
+
+```tsx
+import { useTranslations } from 'next-intl';
+
+export function Component() {
+  const t = useTranslations('ComponentName');
+  return <h1>{t('title')}</h1>;
+}
+```
+
+Supported languages: Azerbaijani (az), English (en), Russian (ru)
+
+## 📊 Quality Standards
+
+- **TypeScript Errors:** 0
+- **Lint Violations:** 0
+- **Test Coverage:** 100%
+- **Accessibility:** WCAG 2.1 AA
+- **Bundle Size:** <250KB (gzipped)
+- **Lighthouse Score:** 90+
+
+## 🔗 References
+
+- [NextJS Docs](https://nextjs.org/docs)
+- [Feature-Sliced Design](https://feature-sliced.design)
+- [React Query](https://tanstack.com/query)
+- [Tailwind CSS](https://tailwindcss.com)
+- [WCAG 2.1](https://www.w3.org/WAI/WCAG21/)
+
+---
+
+**Built with ❤️ using NextJS, TypeScript, and Claude Code**

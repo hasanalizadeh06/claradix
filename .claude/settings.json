@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "bash": {
+      "npm": true,
+      "npx": true,
+      "node": true,
+      "git": true
+    },
+    "powerShell": {
+      "npm": true,
+      "npx": true,
+      "node": true,
+      "git": true
+    }
+  },
+  "hooks": {
+    "on-claude-response": [
+      "npm run lint --fix",
+      "npm run type-check"
+    ]
+  },
+  "model": "claude-opus-4-8",
+  "reasoning_effort": "medium",
+  "environment": {
+    "NODE_ENV": "development",
+    "NEXT_PUBLIC_APP_NAME": "Claradix",
+    "NEXT_PUBLIC_API_URL": "http://localhost:3000",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+  "typescript": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
+  "eslint": {
+    "extends": [
+      "next/core-web-vitals",
+      "prettier"
+    ]
+  },
+  "testing": {
+    "minCoverage": 100,
+    "framework": "jest",
+    "testEnvironment": "jsdom"
+  },
+  "customAgents": {
+    "IDA": {
+      "type": "development",
+      "description": "Imprezza Development Assistant for Claradix"
+    }
+  }
+}
