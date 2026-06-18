@@ -441,6 +441,57 @@ npm run type-check
 
 ---
 
+## 🔄 Development Workflow (5 Phases)
+
+Every task follows this structured workflow:
+
+### Phase 1: Analysis
+1. Read `.claude/CLAUDE.md` for project context
+2. Identify which FSD layers are affected
+3. Check relevant rule files for requirements
+4. Plan file structure and changes
+
+### Phase 2: Request Approval
+1. Explain changes clearly and concisely
+2. List all files to be modified/created with reasons
+3. Request explicit user approval before proceeding
+4. Allow revisions to the plan if needed
+
+### Phase 3: Implementation
+1. Apply changes following **all project rules**
+2. Update `index.ts` exports in affected layers
+3. Add translation keys if new UI text is introduced
+4. Run `/build-project` validation immediately after
+
+### Phase 4: Validation
+1. ✅ Type checking passes (`npm run type-check`)
+2. ✅ Tests pass with 100% coverage
+3. ✅ Linting passes (`npm run lint`)
+4. ✅ Build succeeds (`npm run build`)
+5. ✅ No console warnings or errors
+
+### Phase 5: Reporting
+1. Summarize all changes made
+2. List files modified and why
+3. Report code quality metrics
+4. Show validation results
+5. Confirm ready for commit/deployment
+
+---
+
+## ⚠️ Key Principles for Every Change
+
+- **No direct axios** → Use layer-based pattern (client → requests → entity API → hooks → widgets)
+- **No raw useQuery** → Always use `useApiQuery`/`useApiMutation` wrappers
+- **All text translated** → No hardcoded text; use `useTranslations()`
+- **Semantic HTML** → Native elements first; ARIA only when needed
+- **Type safety** → No `any` type; all parameters/returns typed
+- **Accessibility** → WCAG 2.1 AA minimum; 44×44px touch targets
+- **Tests first** → 100% coverage enforced in build
+- **Layer rules** → Correct placement + import directions strictly enforced
+
+---
+
 ## 📚 Important Rules
 
 ### FSD Architecture

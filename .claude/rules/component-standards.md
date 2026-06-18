@@ -318,6 +318,231 @@ export function BuyerCard({ buyer: Buyer }) {  // Not valid TypeScript
 
 ---
 
+## 🚫 Forbidden Patterns (ALWAYS DETECT & FIX)
+
+These patterns break the architecture and are NOT allowed:
+
+```tsx
+// ❌ WRONG: Direct axios usage (use apiGet/apiPost instead)
+import axios from 'axios';
+const data = await axios.get('/api/data');
+
+// ❌ WRONG: Direct apiClient usage (use typed wrappers)
+import apiClient from '@/shared/api/client';
+const data = await apiClient.get('/api/data');
+
+// ❌ WRONG: Raw useQuery without wrapper (use useApiQuery)
+const { data } = useQuery({ queryKey: ['data'], queryFn: () => fetch('...') });
+
+// ❌ WRONG: Hardcoded text without translation
+<h1>Welcome</h1>
+<button>Click me</button>
+
+// ❌ WRONG: Div as button (use <button> element)
+<div onClick={handleClick} role="button">Click me</div>
+
+// ❌ WRONG: Image without alt text
+<img src="photo.jpg" />
+
+// ❌ WRONG: Using any type
+const data: any = response;
+const handleClick: any = () => {};
+
+// ❌ WRONG: Circular imports or wrong layer imports
+// entities/ importing from features/
+import { useCreateBuyer } from '@/features/create-buyer';
+export const buyerApi = { ... };
+
+// ❌ WRONG: Multiple h1 per page
+<h1>Title</h1>
+<h1>Subtitle</h1>
+
+// ❌ WRONG: Input without label
+<input type="email" placeholder="Enter email" />
+
+// ❌ WRONG: Table header without scope
+<table>
+  <tr>
+    <th>Name</th>  {/* Missing scope="col" */}
+  </tr>
+</table>
+
+// ❌ WRONG: Button without type attribute
+<button onClick={handleSubmit}>Submit</button>
+
+// ❌ WRONG: Link with javascript:void(0)
+<a href="javascript:void(0)" onClick={handleClick}>Click</a>
+
+// ❌ WRONG: Missing error state handling
+const { data, isLoading } = useBuyers();
+if (isLoading) return <Loading />;
+return <List data={data} />;  // What if error?
+
+// ❌ WRONG: Manual Authorization header (interceptor handles it)
+const config = { headers: { Authorization: `Bearer ${token}` } };
+const response = await apiClient.get('/api', config);
+
+// ❌ WRONG: Using placeholder as label
+<input placeholder="First Name" />
+```
+
+---
+
+## ✅ Enforced Patterns (ALWAYS APPLY)
+
+These patterns are required and should be used everywhere:
+
+```tsx
+// ✅ CORRECT: Proper 7-layer API pattern
+import { apiGet, apiPost } from '@/shared/api/requests';
+
+// Layer 5: Entity API
+export const buyerApi = {
+  getBuyers: () => apiGet<Buyer[]>('/buyer'),
+  createBuyer: (data: CreateBuyerDto) => apiPost<Buyer, CreateBuyerDto>('/buyer', data),
+};
+
+// Layer 6: Feature hook
+import { useApiQuery } from '@/shared/api/useApi';
+export const useBuyers = () =>
+  useApiQuery<Buyer[], unknown>(['buyers'], buyerApi.getBuyers);
+
+// Layer 7: Widget component
+'use client';
+import { useBuyers } from '@/features/buyer-list';
+export function BuyersWidget() {
+  const { data, isLoading, error } = useBuyers();
+  if (isLoading) return <Loading />;
+  if (error) return <Error message={String((error as any)?.message)} />;
+  if (!data?.length) return <Empty />;
+  return <List data={data} />;
+}
+
+// ✅ CORRECT: Translation with proper namespace
+import { useTranslations } from 'next-intl';
+const t = useTranslations('BuyersPage');
+<h1>{t('title')}</h1>
+
+// ✅ CORRECT: Semantic button with type
+<button type="button" onClick={handleClick} aria-label={t('buttonLabel')}>
+  {t('buttonText')}
+</button>
+
+// ✅ CORRECT: Image with descriptive alt
+<img
+  src="buyer.jpg"
+  alt={t('buyerImageAlt')}
+  width={200}
+  height={200}
+  loading="lazy"
+  decoding="async"
+/>
+
+// ✅ CORRECT: Proper component prop typing
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  title: string;
+  description: string;
+  variant?: 'primary' | 'secondary';
+}
+
+export function Card({ title, description, variant = 'primary', ...props }: CardProps) {
+  return (
+    <article className={styles[variant]} {...props}>
+      <h2>{title}</h2>
+      <p>{description}</p>
+    </article>
+  );
+}
+
+// ✅ CORRECT: Single h1 with proper hierarchy
+<main>
+  <h1>{t('mainTitle')}</h1>
+  
+  <section aria-labelledby="features-heading">
+    <h2 id="features-heading">{t('featuresTitle')}</h2>
+    
+    <h3>{t('feature1Title')}</h3>
+    <p>{t('feature1Description')}</p>
+  </section>
+</main>
+
+// ✅ CORRECT: Form with accessibility
+<form>
+  <fieldset>
+    <legend>{t('personalInfo')}</legend>
+    
+    <label htmlFor="email">{t('emailLabel')}</label>
+    <input
+      id="email"
+      type="email"
+      required
+      aria-required="true"
+      aria-invalid={!!error}
+      aria-describedby={error ? 'email-error' : undefined}
+      {...register('email')}
+    />
+    {error && (
+      <span id="email-error" role="alert">
+        {error.message}
+      </span>
+    )}
+  </fieldset>
+</form>
+
+// ✅ CORRECT: Table with proper semantics
+<table aria-label={t('salesTable')}>
+  <caption>{t('monthlySalesData')}</caption>
+  <thead>
+    <tr>
+      <th scope="col">{t('month')}</th>
+      <th scope="col">{t('revenue')}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{t('january')}</td>
+      <td>$50,000</td>
+    </tr>
+  </tbody>
+</table>
+
+// ✅ CORRECT: Proper type safety
+interface Buyer {
+  id: string;
+  name: string;
+  email: string;
+}
+
+type CreateBuyerDto = Omit<Buyer, 'id'>;
+
+const handleCreate = async (data: CreateBuyerDto): Promise<Buyer> => {
+  return buyerApi.createBuyer(data);
+};
+
+// ✅ CORRECT: All states handled
+const { data, isLoading, error } = useBuyers();
+
+if (isLoading) return <LoadingSpinner />;
+if (error) return <ErrorMessage error={error} />;
+if (!data?.length) return <EmptyState />;
+
+return <BuyersList buyers={data} />;
+
+// ✅ CORRECT: Native link with proper href and external handling
+<a href="/buyers">View Buyers</a>
+
+<a
+  href="https://external.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={t('externalLinkLabel')}
+>
+  {t('externalLink')}
+</a>
+```
+
+---
+
 ## ✅ Component Checklist
 
 - [ ] Component placed in correct FSD layer
@@ -332,6 +557,8 @@ export function BuyerCard({ buyer: Buyer }) {  // Not valid TypeScript
 - [ ] No console warnings
 - [ ] No TypeScript errors
 - [ ] Index.ts exports the component
+- [ ] No forbidden patterns used
+- [ ] Enforced patterns followed
 
 ---
 
