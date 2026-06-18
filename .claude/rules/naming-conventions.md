@@ -223,12 +223,12 @@ BuyerListSection   (use Widget suffix, not Section)
 
 ```ts
 // entities/buyer/index.ts
-export { type Buyer, type CreateBuyerDto } from './model/types';
-export { buyerApi } from './api/buyerApi';
-export { BuyerCard } from './ui/BuyerCard';
+export { type Buyer, type CreateBuyerDto } from "./model/types";
+export { buyerApi } from "./api/buyerApi";
+export { BuyerCard } from "./ui/BuyerCard";
 
 // Then import using path alias:
-import { Buyer, buyerApi, BuyerCard } from '@/entities/buyer';
+import { Buyer, buyerApi, BuyerCard } from "@/entities/buyer";
 ```
 
 ### Never Use Default Exports in FSD Layers
@@ -331,15 +331,20 @@ Use **BEM (Block Element Modifier)** with kebab-case (or Tailwind utility classe
 
 ```css
 /* Block */
-.buyer-card { }
+.buyer-card {
+}
 
 /* Element */
-.buyer-card__header { }
-.buyer-card__content { }
+.buyer-card__header {
+}
+.buyer-card__content {
+}
 
 /* Modifier */
-.buyer-card--active { }
-.buyer-card--disabled { }
+.buyer-card--active {
+}
+.buyer-card--disabled {
+}
 ```
 
 ---

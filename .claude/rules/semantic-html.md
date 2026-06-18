@@ -7,6 +7,7 @@
 ## 🔑 Core Principles (CRITICAL)
 
 ### 1. **Native HTML semantics > ARIA**
+
 ALWAYS use native elements first. ARIA is a fallback only.
 
 ```tsx
@@ -28,7 +29,9 @@ ALWAYS use native elements first. ARIA is a fallback only.
 ```
 
 ### 2. **Keyboard Accessibility**
+
 ALL interactive elements must work with keyboard:
+
 - **Tab** — Navigate forward
 - **Shift+Tab** — Navigate backward
 - **Enter/Space** — Activate button
@@ -36,6 +39,7 @@ ALL interactive elements must work with keyboard:
 - **Escape** — Close dialogs/dropdowns
 
 ### 3. **Screen Reader Friendly**
+
 - All text has semantic meaning
 - Links have descriptive text (not "click here")
 - Images have alt text
@@ -43,6 +47,7 @@ ALL interactive elements must work with keyboard:
 - Landmarks help navigation
 
 ### 4. **WCAG 2.1 AA Requirements**
+
 - **1.1.1 Non-text Content** — All images have alt text
 - **1.4.3 Contrast** — Text contrast ≥4.5:1 (normal), ≥3:1 (large)
 - **2.1.1 Keyboard** — All functionality keyboard accessible
@@ -60,28 +65,28 @@ ALL interactive elements must work with keyboard:
 ### Required Landmarks
 
 ```tsx
-'use client';
-import { useTranslations } from 'next-intl';
+"use client";
+import { useTranslations } from "next-intl";
 
 export default function Layout({ children }) {
-  const t = useTranslations('Layout');
+  const t = useTranslations("Layout");
 
   return (
     <html lang="en" dir="ltr">
       <head>
-        <title>{t('pageTitle')}</title>
-        <meta name="description" content={t('pageDescription')} />
+        <title>{t("pageTitle")}</title>
+        <meta name="description" content={t("pageDescription")} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body>
         {/* Skip link */}
         <a href="#main-content" className="sr-only focus:not-sr-only">
-          {t('skipToContent')}
+          {t("skipToContent")}
         </a>
 
         {/* Page header */}
-        <header role="banner" aria-label={t('headerLabel')}>
-          <nav aria-label={t('mainNav')}>{/* ... */}</nav>
+        <header role="banner" aria-label={t("headerLabel")}>
+          <nav aria-label={t("mainNav")}>{/* ... */}</nav>
         </header>
 
         {/* Main content */}
@@ -90,7 +95,7 @@ export default function Layout({ children }) {
         </main>
 
         {/* Page footer */}
-        <footer role="contentinfo" aria-label={t('footerLabel')}>
+        <footer role="contentinfo" aria-label={t("footerLabel")}>
           {/* ... */}
         </footer>
       </body>
@@ -387,6 +392,7 @@ export default function Layout({ children }) {
 ## 🎭 Advanced ARIA Attributes
 
 ### aria-label & aria-labelledby
+
 ```tsx
 // aria-label: Direct labeling (last resort)
 <button aria-label="Close menu">✕</button>
@@ -399,6 +405,7 @@ export default function Layout({ children }) {
 ```
 
 ### aria-describedby
+
 ```tsx
 // Additional description
 <input aria-describedby="password-hint" />
@@ -410,6 +417,7 @@ export default function Layout({ children }) {
 ```
 
 ### aria-expanded & aria-controls
+
 ```tsx
 // Dropdown/accordion
 <button
@@ -425,6 +433,7 @@ export default function Layout({ children }) {
 ```
 
 ### aria-current
+
 ```tsx
 // Navigation active state
 <a href="/buyers" aria-current="page">Buyers</a>
@@ -435,6 +444,7 @@ export default function Layout({ children }) {
 ```
 
 ### aria-live & aria-atomic
+
 ```tsx
 // Status updates (polite)
 <div aria-live="polite" aria-atomic="true">
@@ -452,6 +462,7 @@ export default function Layout({ children }) {
 ## 📋 Form Accessibility (Detailed)
 
 ### Fieldset & Legend
+
 ```tsx
 <fieldset>
   <legend>Personal Information</legend>
@@ -466,6 +477,7 @@ export default function Layout({ children }) {
 ```
 
 ### Input Types & Accessibility
+
 ```tsx
 // Email
 <label for="email">Email</label>
@@ -500,6 +512,7 @@ export default function Layout({ children }) {
 ```
 
 ### Error Handling
+
 ```tsx
 <div role="alert" aria-live="polite">
   {errors.email?.message && (
@@ -518,6 +531,7 @@ export default function Layout({ children }) {
 ## 🎥 Video & Audio Accessibility
 
 ### Video
+
 ```tsx
 <video
   controls
@@ -528,7 +542,7 @@ export default function Layout({ children }) {
 >
   <source src="/video.webm" type="video/webm; codecs=vp9,opus" />
   <source src="/video.mp4" type="video/mp4" />
-  
+
   {/* Captions (required for WCAG AA) */}
   <track
     kind="captions"
@@ -537,24 +551,23 @@ export default function Layout({ children }) {
     label="English"
     default
   />
-  
+
   {/* Descriptions for blind users (WCAG AAA) */}
-  <track
-    kind="descriptions"
-    src="/descriptions.vtt"
-    srclang="en"
-  />
-  
+  <track kind="descriptions" src="/descriptions.vtt" srclang="en" />
+
   <p>Your browser doesn't support HTML5 video.</p>
 </video>
 ```
 
 ### Audio
+
 ```tsx
 <audio controls preload="none" aria-label="Podcast Episode 1">
   <source src="/podcast.ogg" type="audio/ogg; codecs=vorbis" />
   <source src="/podcast.mp3" type="audio/mpeg" />
-  <p><a href="/podcast.mp3">Download audio</a></p>
+  <p>
+    <a href="/podcast.mp3">Download audio</a>
+  </p>
 </audio>
 ```
 
@@ -563,6 +576,7 @@ export default function Layout({ children }) {
 ## 📊 Table Accessibility
 
 ### Proper Table Structure
+
 ```tsx
 <table aria-label="Monthly Sales Data">
   <caption>Sales Performance 2024</caption>
@@ -591,6 +605,7 @@ export default function Layout({ children }) {
 ```
 
 ### Complex Tables with Headers
+
 ```tsx
 <table>
   <tr>
@@ -609,6 +624,7 @@ export default function Layout({ children }) {
 ## 🎨 Lists & Navigation
 
 ### Ordered Lists
+
 ```tsx
 <ol aria-label="Installation Steps">
   <li>Download the package</li>
@@ -618,6 +634,7 @@ export default function Layout({ children }) {
 ```
 
 ### Unordered Lists
+
 ```tsx
 <ul role="list" aria-label="Features">
   <li>Fast</li>
@@ -627,12 +644,21 @@ export default function Layout({ children }) {
 ```
 
 ### Navigation Menu
+
 ```tsx
 <nav aria-label="Main Navigation">
   <ul role="list">
-    <li><a href="/" aria-current="page">Home</a></li>
-    <li><a href="/about">About</a></li>
-    <li><a href="/contact">Contact</a></li>
+    <li>
+      <a href="/" aria-current="page">
+        Home
+      </a>
+    </li>
+    <li>
+      <a href="/about">About</a>
+    </li>
+    <li>
+      <a href="/contact">Contact</a>
+    </li>
   </ul>
 </nav>
 ```
@@ -642,6 +668,7 @@ export default function Layout({ children }) {
 ## 📱 Mobile & Touch Accessibility
 
 ### Minimum Touch Targets
+
 ```tsx
 // ✅ CORRECT: 48×48px (or 44×44px minimum)
 <button className="w-12 h-12">  {/* 48px */}
@@ -661,6 +688,7 @@ export default function Layout({ children }) {
 ```
 
 ### Input Modes (Mobile Keyboards)
+
 ```tsx
 <input type="email" inputMode="email" />      // Email keyboard
 <input type="tel" inputMode="tel" />          // Phone keyboard
@@ -674,6 +702,7 @@ export default function Layout({ children }) {
 ## 🎭 Interactive Components
 
 ### Modals & Dialogs
+
 ```tsx
 <dialog id="confirm" aria-labelledby="title" aria-modal="true">
   <h2 id="title">Confirm Action</h2>
@@ -688,6 +717,7 @@ export default function Layout({ children }) {
 ```
 
 ### Dropdown/Combobox
+
 ```tsx
 <div className="relative">
   <button
@@ -696,15 +726,10 @@ export default function Layout({ children }) {
     aria-controls="options"
     onClick={toggleOpen}
   >
-    {selected || 'Choose option'}
+    {selected || "Choose option"}
   </button>
-  <ul
-    id="options"
-    role="listbox"
-    hidden={!isOpen}
-    aria-label="Options"
-  >
-    {items.map(item => (
+  <ul id="options" role="listbox" hidden={!isOpen} aria-label="Options">
+    {items.map((item) => (
       <li
         key={item.id}
         role="option"
@@ -719,6 +744,7 @@ export default function Layout({ children }) {
 ```
 
 ### Tabs
+
 ```tsx
 <div role="tablist" aria-label="Content tabs">
   <button
@@ -751,24 +777,25 @@ export default function Layout({ children }) {
 
 ## 🚫 Common Mistakes & Fixes
 
-| Mistake | Problem | Fix |
-|---------|---------|-----|
-| `<img>` without `alt` | WCAG violation, confusing for screen readers | Add descriptive `alt=""` |
-| `placeholder` as label | Disappears on focus, accessibility issue | Use `<label>` |
-| Multiple `<h1>` | Screen reader confusion | One `<h1>` per page only |
-| `<div role="button">` | No keyboard support, click events fail | Use `<button type="button">` |
-| `<a href="javascript:void(0)">` | Keyboard navigation broken | Use proper href or `<button>` |
-| No `<label>` for input | Cannot click label to focus input | `<label htmlFor="id">` |
-| `aria-label` without visible text | Confusing for sighted users | Use visible label, aria-label is fallback |
-| `display: none` + `aria-hidden` | Redundant | Use one or other, not both |
-| Color-only distinction | Colorblind users can't distinguish | Add icons, patterns, text |
-| Auto-playing video/audio | WCAG 1.4.2 violation | Require user interaction |
+| Mistake                           | Problem                                      | Fix                                       |
+| --------------------------------- | -------------------------------------------- | ----------------------------------------- |
+| `<img>` without `alt`             | WCAG violation, confusing for screen readers | Add descriptive `alt=""`                  |
+| `placeholder` as label            | Disappears on focus, accessibility issue     | Use `<label>`                             |
+| Multiple `<h1>`                   | Screen reader confusion                      | One `<h1>` per page only                  |
+| `<div role="button">`             | No keyboard support, click events fail       | Use `<button type="button">`              |
+| `<a href="javascript:void(0)">`   | Keyboard navigation broken                   | Use proper href or `<button>`             |
+| No `<label>` for input            | Cannot click label to focus input            | `<label htmlFor="id">`                    |
+| `aria-label` without visible text | Confusing for sighted users                  | Use visible label, aria-label is fallback |
+| `display: none` + `aria-hidden`   | Redundant                                    | Use one or other, not both                |
+| Color-only distinction            | Colorblind users can't distinguish           | Add icons, patterns, text                 |
+| Auto-playing video/audio          | WCAG 1.4.2 violation                         | Require user interaction                  |
 
 ---
 
 ## ✅ Complete Accessibility Checklist
 
 ### HTML Structure
+
 - [ ] `<!DOCTYPE html>` present
 - [ ] `<html lang="...">`set correctly
 - [ ] `<meta charset="UTF-8">` first meta tag
@@ -778,6 +805,7 @@ export default function Layout({ children }) {
 - [ ] `<link rel="canonical">` for duplicate URLs
 
 ### Headings & Content
+
 - [ ] Only ONE `<h1>` per page
 - [ ] Heading hierarchy: h1→h2→h3 (no skips)
 - [ ] Headings are descriptive
@@ -785,6 +813,7 @@ export default function Layout({ children }) {
 - [ ] All text uses `useTranslations()`
 
 ### Landmarks
+
 - [ ] `<header role="banner">` once (page-level)
 - [ ] `<nav aria-label="...">` for all navigation
 - [ ] `<main id="main-content">` once
@@ -794,6 +823,7 @@ export default function Layout({ children }) {
 - [ ] `<aside>` for complementary content
 
 ### Images
+
 - [ ] All `<img>` have `alt=""`
 - [ ] Alt text is descriptive (not "image")
 - [ ] All images have `width/height`
@@ -802,6 +832,7 @@ export default function Layout({ children }) {
 - [ ] Images use `decoding="async"`
 
 ### Forms
+
 - [ ] Every `<input>` has `<label htmlFor>`
 - [ ] Form inputs have `name` attribute
 - [ ] Required fields: `required` + `aria-required="true"`
@@ -812,6 +843,7 @@ export default function Layout({ children }) {
 - [ ] Email inputs: `inputMode="email"` + `autoComplete="email"`
 
 ### Interactive Elements
+
 - [ ] All buttons: `<button type="button/submit/reset">`
 - [ ] All links: proper `<a href="...">` with text
 - [ ] Buttons with icons: `aria-label="..."` if no text
@@ -820,6 +852,7 @@ export default function Layout({ children }) {
 - [ ] Menu items: `aria-current` for active state
 
 ### Keyboard Navigation
+
 - [ ] `Tab` moves through interactive elements
 - [ ] `Shift+Tab` moves backward
 - [ ] `Enter` activates buttons
@@ -830,6 +863,7 @@ export default function Layout({ children }) {
 - [ ] Focus order logical (left-to-right, top-to-bottom)
 
 ### Accessibility Features
+
 - [ ] Videos have `<track kind="captions">`
 - [ ] Audio has transcripts available
 - [ ] Tables have `<caption>` + proper `<th scope>`
@@ -840,6 +874,7 @@ export default function Layout({ children }) {
 - [ ] No color-only distinction (also use icons/text)
 
 ### Mobile/Touch
+
 - [ ] Touch targets ≥44×44px minimum
 - [ ] Spacing between touch targets ≥8px
 - [ ] No tap-delay issues
@@ -849,6 +884,7 @@ export default function Layout({ children }) {
 - [ ] No `user-scalable=no`
 
 ### Performance & SEO
+
 - [ ] Open Graph meta tags (og:title, og:image, etc.)
 - [ ] JSON-LD structured data (`schema.org`)
 - [ ] `<link rel="alternate" hreflang="...">` for multi-language

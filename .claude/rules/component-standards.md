@@ -5,34 +5,35 @@
 ## Component Types & Placement
 
 ### UI Components (`shared/ui/`)
+
 Reusable, atomic components with zero business logic.
 
 ```tsx
 // shared/ui/Button/Button.tsx
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "danger";
+  size?: "sm" | "md" | "lg";
   isLoading?: boolean;
 }
 
 export function Button({
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   isLoading = false,
   children,
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'font-medium transition-colors';
+  const baseStyles = "font-medium transition-colors";
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-slate-200 text-slate-900 hover:bg-slate-300',
-    danger: 'bg-red-600 text-white hover:bg-red-700',
+    primary: "bg-blue-600 text-white hover:bg-blue-700",
+    secondary: "bg-slate-200 text-slate-900 hover:bg-slate-300",
+    danger: "bg-red-600 text-white hover:bg-red-700",
   };
   const sizes = {
-    sm: 'px-3 py-1 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: "px-3 py-1 text-sm",
+    md: "px-4 py-2 text-base",
+    lg: "px-6 py-3 text-lg",
   };
 
   return (
@@ -42,18 +43,19 @@ export function Button({
       aria-busy={isLoading}
       {...props}
     >
-      {isLoading ? '...' : children}
+      {isLoading ? "..." : children}
     </button>
   );
 }
 ```
 
 ### Entity UI Components (`entities/[name]/ui/`)
+
 Components that display entity data.
 
 ```tsx
 // entities/buyer/ui/BuyerCard.tsx
-import { Buyer } from '../model/types';
+import { Buyer } from "../model/types";
 
 interface BuyerCardProps {
   buyer: Buyer;
@@ -62,7 +64,10 @@ interface BuyerCardProps {
 
 export function BuyerCard({ buyer, onSelect }: BuyerCardProps) {
   return (
-    <article className="border rounded-lg p-4" aria-labelledby={`buyer-${buyer.id}`}>
+    <article
+      className="border rounded-lg p-4"
+      aria-labelledby={`buyer-${buyer.id}`}
+    >
       <h3 id={`buyer-${buyer.id}`}>{buyer.name}</h3>
       <p className="text-slate-600">{buyer.email}</p>
       {onSelect && (
@@ -80,15 +85,16 @@ export function BuyerCard({ buyer, onSelect }: BuyerCardProps) {
 ```
 
 ### Widget Components (`widgets/[name]/ui/`)
+
 Complex page sections combining features.
 
 ```tsx
 // widgets/buyer-list-widget/ui/BuyerListWidget.tsx
-'use client';
+"use client";
 
-import { useBuyers } from '@/features/buyer-list';
-import { BuyerCard } from '@/entities/buyer/ui/BuyerCard';
-import { Loading, Error, Empty } from '@/shared/ui';
+import { useBuyers } from "@/features/buyer-list";
+import { BuyerCard } from "@/entities/buyer/ui/BuyerCard";
+import { Loading, Error, Empty } from "@/shared/ui";
 
 export function BuyerListWidget() {
   const { data, isLoading, error } = useBuyers();
@@ -99,7 +105,9 @@ export function BuyerListWidget() {
 
   return (
     <div className="grid gap-4">
-      {data.map(buyer => <BuyerCard key={buyer.id} buyer={buyer} />)}
+      {data.map((buyer) => (
+        <BuyerCard key={buyer.id} buyer={buyer} />
+      ))}
     </div>
   );
 }
@@ -151,16 +159,22 @@ export function Component() {
 }
 
 // ✅ CORRECT: Ternary for UI variants
-<button className={isActive ? 'bg-blue-600' : 'bg-slate-200'}>
-  {isActive ? 'Active' : 'Inactive'}
-</button>
+<button className={isActive ? "bg-blue-600" : "bg-slate-200"}>
+  {isActive ? "Active" : "Inactive"}
+</button>;
 
 // ❌ WRONG: render prop without JSX fragment
-{isLoading && <Loading />}
-{error && <Error />}
+{
+  isLoading && <Loading />;
+}
+{
+  error && <Error />;
+}
 
 // ❌ WRONG: Complex ternaries
-{isLoading ? <Loading /> : error ? <Error /> : data ? <Content /> : <Empty />}
+{
+  isLoading ? <Loading /> : error ? <Error /> : data ? <Content /> : <Empty />;
+}
 ```
 
 ---
@@ -174,7 +188,7 @@ export function Component() {
 export function Component() {
   const { data, isLoading } = useBuyers();
   const { register, handleSubmit } = useForm();
-  
+
   return (...);
 }
 
@@ -198,19 +212,22 @@ useEffect(() => {
 }, [query, handleSearch]);
 
 // ✅ CORRECT: Memoize callback if needed
-const handleSearch = useCallback((q: string) => {
-  // ...
-}, [dependency]);
+const handleSearch = useCallback(
+  (q: string) => {
+    // ...
+  },
+  [dependency],
+);
 
 // ❌ WRONG: Empty dependency array when needed
 useEffect(() => {
   handleSearch(query);
-}, []);  // Query change won't trigger!
+}, []); // Query change won't trigger!
 
 // ❌ WRONG: Function in dependency without useCallback
 useEffect(() => {
   if (shouldFetch) fetch();
-}, [shouldFetch, fetch]);  // fetch reference changes constantly!
+}, [shouldFetch, fetch]); // fetch reference changes constantly!
 ```
 
 ---
@@ -235,24 +252,24 @@ export type { ButtonProps } from './Button';
 
 ```tsx
 // ✅ CORRECT: User-centric tests
-import { render, screen } from '@testing-library/react';
-import { Button } from './Button';
+import { render, screen } from "@testing-library/react";
+import { Button } from "./Button";
 
-test('button renders and is clickable', () => {
+test("button renders and is clickable", () => {
   const handleClick = jest.fn();
   render(<Button onClick={handleClick}>Click me</Button>);
-  
-  const button = screen.getByRole('button', { name: /click me/i });
+
+  const button = screen.getByRole("button", { name: /click me/i });
   expect(button).toBeInTheDocument();
-  
+
   button.click();
   expect(handleClick).toHaveBeenCalledTimes(1);
 });
 
 // ❌ WRONG: Implementation details
-test('button has correct className', () => {
+test("button has correct className", () => {
   const { container } = render(<Button>Click</Button>);
-  expect(container.querySelector('button')).toHaveClass('btn');
+  expect(container.querySelector("button")).toHaveClass("btn");
 });
 ```
 
@@ -457,10 +474,10 @@ export function Card({ title, description, variant = 'primary', ...props }: Card
 // ✅ CORRECT: Single h1 with proper hierarchy
 <main>
   <h1>{t('mainTitle')}</h1>
-  
+
   <section aria-labelledby="features-heading">
     <h2 id="features-heading">{t('featuresTitle')}</h2>
-    
+
     <h3>{t('feature1Title')}</h3>
     <p>{t('feature1Description')}</p>
   </section>
@@ -470,7 +487,7 @@ export function Card({ title, description, variant = 'primary', ...props }: Card
 <form>
   <fieldset>
     <legend>{t('personalInfo')}</legend>
-    
+
     <label htmlFor="email">{t('emailLabel')}</label>
     <input
       id="email"

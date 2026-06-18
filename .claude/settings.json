@@ -14,10 +14,7 @@
     }
   },
   "hooks": {
-    "on-claude-response": [
-      "npm run lint --fix",
-      "npm run type-check"
-    ]
+    "on-claude-response": ["npm run lint --fix", "npm run type-check"]
   },
   "model": "claude-opus-4-8",
   "reasoning_effort": "medium",
@@ -33,10 +30,7 @@
     "strictNullChecks": true
   },
   "eslint": {
-    "extends": [
-      "next/core-web-vitals",
-      "prettier"
-    ]
+    "extends": ["next/core-web-vitals", "prettier"]
   },
   "testing": {
     "minCoverage": 100,

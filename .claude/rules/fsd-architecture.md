@@ -1,6 +1,7 @@
 # 🏗️ Feature-Sliced Design (FSD) Architecture
 
 ## Core Principle
+
 Feature-Sliced Design is a scalable and maintainable architecture pattern where code is organized by **features**, not by **technical layers**. Each feature is self-contained and can be independently developed and tested.
 
 ---
@@ -8,6 +9,7 @@ Feature-Sliced Design is a scalable and maintainable architecture pattern where 
 ## Layer Structure
 
 ### 1. **shared/** — Reusable Across All Layers
+
 Code that can be used anywhere in the application.
 
 ```
@@ -40,6 +42,7 @@ shared/
 ---
 
 ### 2. **entities/** — Business Logic Entities
+
 Domain objects that represent core business concepts.
 
 ```
@@ -60,26 +63,29 @@ entities/
 ```
 
 **Example: types.ts**
+
 ```ts
 export interface Buyer {
   id: string;
   name: string;
   email: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
-export type CreateBuyerDto = Omit<Buyer, 'id'>;
+export type CreateBuyerDto = Omit<Buyer, "id">;
 ```
 
 **Example: buyerApi.ts**
+
 ```ts
-import { apiGet, apiPost } from '@/shared/api/requests';
-import type { Buyer, CreateBuyerDto } from '../model/types';
+import { apiGet, apiPost } from "@/shared/api/requests";
+import type { Buyer, CreateBuyerDto } from "../model/types";
 
 export const buyerApi = {
-  getBuyers: () => apiGet<Buyer[]>('/buyer'),
+  getBuyers: () => apiGet<Buyer[]>("/buyer"),
   getBuyerById: (id: string) => apiGet<Buyer>(`/buyer/${id}`),
-  createBuyer: (data: CreateBuyerDto) => apiPost<Buyer, CreateBuyerDto>('/buyer', data),
+  createBuyer: (data: CreateBuyerDto) =>
+    apiPost<Buyer, CreateBuyerDto>("/buyer", data),
 };
 ```
 
@@ -88,6 +94,7 @@ export const buyerApi = {
 ---
 
 ### 3. **features/** — User Actions & Feature Logic
+
 Implements specific user actions and features using entities.
 
 ```
@@ -110,13 +117,14 @@ features/
 ```
 
 **Example: useBuyers.ts**
+
 ```ts
-import { useApiQuery } from '@/shared/api/useApi';
-import { buyerApi } from '@/entities/buyer/api/buyerApi';
-import type { Buyer } from '@/entities/buyer/model/types';
+import { useApiQuery } from "@/shared/api/useApi";
+import { buyerApi } from "@/entities/buyer/api/buyerApi";
+import type { Buyer } from "@/entities/buyer/model/types";
 
 export const useBuyers = () =>
-  useApiQuery<Buyer[], unknown>(['buyers'], buyerApi.getBuyers);
+  useApiQuery<Buyer[], unknown>(["buyers"], buyerApi.getBuyers);
 ```
 
 **Import Rule:** `features` → `entities`, `shared` only
@@ -124,6 +132,7 @@ export const useBuyers = () =>
 ---
 
 ### 4. **widgets/** — Complex Page Sections
+
 Independent, composable page sections that combine multiple features/entities.
 
 ```
@@ -143,12 +152,13 @@ widgets/
 ```
 
 **Example: BuyerListWidget.tsx**
-```tsx
-'use client';
 
-import { useBuyers } from '@/features/buyer-list';
-import { BuyerCard } from '@/entities/buyer/ui/BuyerCard';
-import { Loading, Error } from '@/shared/ui';
+```tsx
+"use client";
+
+import { useBuyers } from "@/features/buyer-list";
+import { BuyerCard } from "@/entities/buyer/ui/BuyerCard";
+import { Loading, Error } from "@/shared/ui";
 
 export function BuyerListWidget() {
   const { data, isLoading, error } = useBuyers();
@@ -159,7 +169,9 @@ export function BuyerListWidget() {
 
   return (
     <div className="grid gap-4">
-      {data.map(buyer => <BuyerCard key={buyer.id} buyer={buyer} />)}
+      {data.map((buyer) => (
+        <BuyerCard key={buyer.id} buyer={buyer} />
+      ))}
     </div>
   );
 }
@@ -170,6 +182,7 @@ export function BuyerListWidget() {
 ---
 
 ### 5. **app/** — NextJS Pages & Routing
+
 Lowest-level components that handle routing and page composition.
 
 ```
@@ -189,21 +202,22 @@ app/
 ```
 
 **Example: app/[locale]/buyers/page.tsx**
+
 ```tsx
-import { useTranslations } from 'next-intl';
-import { BuyerListWidget } from '@/widgets/buyer-list-widget';
+import { useTranslations } from "next-intl";
+import { BuyerListWidget } from "@/widgets/buyer-list-widget";
 
 export const metadata = {
-  title: 'Buyers',
-  description: 'Manage all buyers',
+  title: "Buyers",
+  description: "Manage all buyers",
 };
 
 export default function BuyersPage() {
-  const t = useTranslations('BuyersPage');
-  
+  const t = useTranslations("BuyersPage");
+
   return (
     <main id="main-content" className="container mx-auto py-8">
-      <h1>{t('title')}</h1>
+      <h1>{t("title")}</h1>
       <BuyerListWidget />
     </main>
   );
@@ -282,22 +296,23 @@ Every FSD layer must have an `index.ts` that exports its public API:
 
 ```ts
 // entities/buyer/index.ts
-export { type Buyer, type CreateBuyerDto } from './model/types';
-export { buyerApi } from './api/buyerApi';
-export { BuyerCard } from './ui/BuyerCard';
+export { type Buyer, type CreateBuyerDto } from "./model/types";
+export { buyerApi } from "./api/buyerApi";
+export { BuyerCard } from "./ui/BuyerCard";
 
 // features/buyer-list/index.ts
-export { useBuyers } from './api/useBuyers';
+export { useBuyers } from "./api/useBuyers";
 
 // widgets/buyer-list-widget/index.ts
-export { BuyerListWidget } from './ui/BuyerListWidget';
+export { BuyerListWidget } from "./ui/BuyerListWidget";
 ```
 
 **Then use path aliases:**
+
 ```tsx
-import { Buyer, buyerApi } from '@/entities/buyer';
-import { useBuyers } from '@/features/buyer-list';
-import { BuyerListWidget } from '@/widgets/buyer-list-widget';
+import { Buyer, buyerApi } from "@/entities/buyer";
+import { useBuyers } from "@/features/buyer-list";
+import { BuyerListWidget } from "@/widgets/buyer-list-widget";
 ```
 
 ---
@@ -305,12 +320,14 @@ import { BuyerListWidget } from '@/widgets/buyer-list-widget';
 ## ✅ FSD Compliance Checklist
 
 Before creating a file:
+
 - [ ] Correct layer determined
 - [ ] Folder exists or needs to be created
 - [ ] `index.ts` exists in the layer
 - [ ] No import direction violations
 
 After creating a file:
+
 - [ ] Updated layer's `index.ts`
 - [ ] All imports use path aliases
 - [ ] No relative `../../` imports

@@ -15,11 +15,13 @@ Runs comprehensive validation pipeline: format → lint → type-check → tests
 ```
 
 **Flags (optional):**
+
 - `--skip-tests` → Skip test execution (faster)
 - `--skip-build` → Skip final build (still checks tests)
 - `--only-lint` → Only format and lint (skip type-check, tests, build)
 
 **Context (optional):**
+
 - `before deployment` → Full validation
 - `quick check` → Skip expensive steps
 - `pre-commit` → Skip build, keep tests
@@ -27,30 +29,35 @@ Runs comprehensive validation pipeline: format → lint → type-check → tests
 ## Usage Examples
 
 ✅ **Full validation (deployment):**
+
 ```bash
 /build-project before deployment
 ↓ Runs: Prettier → ESLint → TypeCheck → Tests → Build
 ```
 
 ✅ **Quick check (during development):**
+
 ```bash
 /build-project --skip-tests
 ↓ Runs: Prettier → ESLint → TypeCheck → (skip tests) → Build
 ```
 
 ✅ **Pre-commit validation:**
+
 ```bash
 /build-project pre-commit
 ↓ Runs: Prettier → ESLint → TypeCheck → Tests (no build)
 ```
 
 ✅ **Minimal check:**
+
 ```bash
 /build-project --only-lint
 ↓ Runs: Prettier → ESLint (skip type-check, tests, build)
 ```
 
 ❌ **No arguments (runs full):**
+
 ```bash
 /build-project
 ↓ Runs complete pipeline: all 5 steps
@@ -61,6 +68,7 @@ Runs comprehensive validation pipeline: format → lint → type-check → tests
 **You run:** `/build-project` (no flags or context)
 
 **I will:**
+
 ```
 ✓ Run FULL validation pipeline (all 5 steps)
 ✓ Report any failures
@@ -84,26 +92,31 @@ If you want specific behavior:
 After validation completes, I will report:
 
 **Formatting & Linting:**
+
 - [ ] Were files reformatted? (how many?)
 - [ ] Were lint issues fixed automatically?
 - [ ] Are there remaining lint errors?
 
 **Type Safety:**
+
 - [ ] Type check passed?
 - [ ] Any type errors to fix?
 - [ ] Any type warnings?
 
 **Tests:**
+
 - [ ] All tests passing?
 - [ ] Coverage at 100%?
 - [ ] Which tests failed (if any)?
 
 **Build:**
+
 - [ ] Build succeeded?
 - [ ] Bundle size OK? (<250KB gzipped?)
 - [ ] Any build warnings?
 
 **Summary & Next Steps:**
+
 - [ ] Is code ready for commit?
 - [ ] Is code ready for deployment?
 - [ ] What needs to be fixed?
@@ -243,12 +256,14 @@ Tip: Use "npm run test -- --watch" for development
 ## When To Use
 
 ✅ **Always use before:**
+
 - Pushing to remote
 - Creating a commit (recommended)
 - Deploying to production
 - Merging to main branch
 
 ⏩ **Quick check (--skip-build):**
+
 - Pre-commit validation
 - During development
 - When just checking code quality

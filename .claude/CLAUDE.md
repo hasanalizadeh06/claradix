@@ -107,6 +107,7 @@ claradix-front/
 ## 🔐 API Architecture (7-Layer Pattern)
 
 ### Layer 1: Axios Client (`shared/api/client.ts`)
+
 - Centralized axios instance
 - Base URL, timeout, headers configuration
 - Request interceptor: Auto-attach `Authorization: Bearer <token>`
@@ -114,6 +115,7 @@ claradix-front/
 - 401 handling: Refresh token queue pattern
 
 ### Layer 2: Typed Request Wrappers (`shared/api/requests.ts`)
+
 ```ts
 apiGet<T>(url, config?) → Promise<T>
 apiPost<T, D>(url, data, config?) → Promise<T>
@@ -123,43 +125,55 @@ apiPatch<T, D>(url, data, config?) → Promise<T>
 ```
 
 ### Layer 3: React Query Config (`shared/api/queryClient.ts`)
+
 - Global defaults: `staleTime`, `cacheTime`, `retry` (GET only), `refetchOnWindowFocus`
 - Error handling: Normalized `ApiError` type
 - No auto-retry for POST/PUT/DELETE (idempotency risk)
 
 ### Layer 4: React Query Wrappers (`shared/api/useApi.ts`)
+
 ```ts
 useApiQuery<TData, TError>(keys, queryFn, options?)
 useApiMutation<TData, TError, TVariables>(mutationFn, options?)
 ```
 
 ### Layer 5: Entity API (`entities/<entity>/api/<entity>Api.ts`)
+
 ```ts
 export const buyerApi = {
-  getBuyers: () => apiGet<Buyer[]>('/buyer'),
-  createBuyer: (data: CreateBuyerDto) => apiPost<Buyer, CreateBuyerDto>('/buyer', data),
+  getBuyers: () => apiGet<Buyer[]>("/buyer"),
+  createBuyer: (data: CreateBuyerDto) =>
+    apiPost<Buyer, CreateBuyerDto>("/buyer", data),
 };
 ```
 
 ### Layer 6: Feature Hook (`features/<entity>/api/use<Entities>.ts`)
+
 ```ts
 export const useBuyers = () =>
-  useApiQuery<Buyer[], unknown>(['buyers'], buyerApi.getBuyers);
+  useApiQuery<Buyer[], unknown>(["buyers"], buyerApi.getBuyers);
 ```
 
 ### Layer 7: UI Widget (`widgets/<entity>-list/ui/<Entities>List.tsx`)
+
 ```tsx
-'use client';
-import { useBuyers } from '@/features/buyer/api/useBuyers';
+"use client";
+import { useBuyers } from "@/features/buyer/api/useBuyers";
 
 export function BuyersWidget() {
   const { data, isLoading, error } = useBuyers();
-  
+
   if (isLoading) return <Loading />;
   if (error) return <p>{String((error as any)?.message)}</p>;
   if (!data?.length) return <p>{t("Buyers.noData")}</p>;
-  
-  return <ul>{data.map(b => <li key={b.id}>{b.name}</li>)}</ul>;
+
+  return (
+    <ul>
+      {data.map((b) => (
+        <li key={b.id}>{b.name}</li>
+      ))}
+    </ul>
+  );
 }
 ```
 
@@ -168,21 +182,24 @@ export function BuyersWidget() {
 ## 🌍 Multilingual Support (next-intl)
 
 ### Setup
+
 - **Routing:** `/[locale]/...` (Azerbaijani `az`, English `en`, Russian `ru`)
 - **Message files:** `src/messages/[locale].json`
 - **Hook:** `useTranslations(namespace)` in client components
 
 ### Usage in Components
+
 ```tsx
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 
 export function HomePage() {
-  const t = useTranslations('HomePage');
-  return <h1>{t('title')}</h1>; // References HomePage.title in message files
+  const t = useTranslations("HomePage");
+  return <h1>{t("title")}</h1>; // References HomePage.title in message files
 }
 ```
 
 ### Translation Key Structure
+
 ```json
 {
   "HomePage": {
@@ -198,7 +215,9 @@ export function HomePage() {
 ```
 
 ### Adding New Strings
+
 Use the `/sync-translations` skill:
+
 ```bash
 /sync-translations
 # Scans for missing keys across all language files
@@ -211,6 +230,7 @@ Use the `/sync-translations` skill:
 When converting existing page to multilingual:
 
 **Step 1: Project Support Check**
+
 ```bash
 ✅ Verify:
   - ./messages/ directory exists (az.json, en.json, ru.json)
@@ -219,11 +239,13 @@ When converting existing page to multilingual:
 ```
 
 **Step 2: File Analysis**
+
 - Identify all hardcoded text strings in `.tsx` file
 - Note HTML content that needs `dangerouslySetInnerHTML`
 - List all user-facing text
 
 **Step 3: Update Translation Files**
+
 ```json
 // messages/az.json
 {
@@ -251,26 +273,28 @@ When converting existing page to multilingual:
 ```
 
 **Step 4: Transform TSX File**
+
 ```tsx
-'use client';
-import { useTranslations } from 'next-intl';
+"use client";
+import { useTranslations } from "next-intl";
 
 export function Page() {
-  const t = useTranslations('PageName');
-  
+  const t = useTranslations("PageName");
+
   return (
     <main>
-      <h1>{t('title')}</h1>
-      <p>{t('description')}</p>
-      
+      <h1>{t("title")}</h1>
+      <p>{t("description")}</p>
+
       {/* For HTML content, use dangerouslySetInnerHTML + t.raw() */}
-      <div dangerouslySetInnerHTML={{ __html: t.raw('richContent') }} />
+      <div dangerouslySetInnerHTML={{ __html: t.raw("richContent") }} />
     </main>
   );
 }
 ```
 
 ### HTML Content in Translations
+
 ```json
 {
   "PageName": {
@@ -288,29 +312,32 @@ export function Page() {
 ```
 
 ### next-intl API Methods
+
 ```tsx
-const t = useTranslations('Namespace');
+const t = useTranslations("Namespace");
 
 // Simple translation
-t('key')
+t("key");
 
 // With interpolation
-t('message', { name: 'John' })  // "Hello {name}" → "Hello John"
+t("message", { name: "John" }); // "Hello {name}" → "Hello John"
 
 // Raw HTML (needs dangerouslySetInnerHTML)
-t.raw('richKey')
+t.raw("richKey");
 
 // Rich components
-t.rich('formatted', {
-  bold: chunks => <strong>{chunks}</strong>
-})
+t.rich("formatted", {
+  bold: (chunks) => <strong>{chunks}</strong>,
+});
 
 // Default value
-t('nonexistent', 'default text')
+t("nonexistent", "default text");
 ```
 
 ### Missing Key Handling
+
 Add placeholder to `messages/[locale].json` when key is missing:
+
 ```json
 {
   "Namespace": {
@@ -320,6 +347,7 @@ Add placeholder to `messages/[locale].json` when key is missing:
 ```
 
 Always sync after adding new strings:
+
 ```bash
 /sync-translations
 ```
@@ -329,22 +357,26 @@ Always sync after adding new strings:
 ## 🧪 Testing Strategy
 
 ### Unit Tests (entities, shared/lib)
+
 ```bash
 npm run test -- src/shared/lib
 npm run test -- src/entities
 ```
 
 ### Integration Tests (hooks, API calls)
+
 ```bash
 npm run test -- src/features
 ```
 
 ### Component Tests (UI components)
+
 ```bash
 npm run test -- src/shared/ui
 ```
 
 ### Coverage Target
+
 - **Minimum:** 100% (enforced on build)
 - **Run coverage:** `npm run test:coverage`
 
@@ -353,6 +385,7 @@ npm run test -- src/shared/ui
 ## 🔒 Security & Performance Checklist
 
 ### API Layer
+
 - ✅ No direct `axios` calls outside `client.ts`
 - ✅ No direct `apiClient.get/post` outside `requests.ts`
 - ✅ No raw `useQuery/useMutation` outside `useApi.ts`
@@ -362,6 +395,7 @@ npm run test -- src/shared/ui
 - ✅ No auto-retry for non-idempotent operations
 
 ### Accessibility (WCAG 2.1 AA)
+
 - ✅ Semantic HTML (button, nav, main, article, section, footer)
 - ✅ All images have `alt` attributes
 - ✅ All interactive elements keyboard accessible
@@ -372,6 +406,7 @@ npm run test -- src/shared/ui
 - ✅ No hardcoded colors (use CSS variables/Tailwind tokens)
 
 ### Performance
+
 - ✅ Next Image: `loading="lazy"`, `decoding="async"`, `width/height`
 - ✅ Code splitting by route
 - ✅ Lazy load components with `dynamic()`
@@ -383,6 +418,7 @@ npm run test -- src/shared/ui
 ## 🎨 Design System
 
 ### Colors
+
 - **Primary:** `bg-blue-600` (`#2563eb`)
 - **Secondary:** `bg-slate-600` (`#475569`)
 - **Success:** `bg-green-600` (`#16a34a`)
@@ -392,6 +428,7 @@ npm run test -- src/shared/ui
 - **Text:** `text-slate-900` / `dark:text-white`
 
 ### Typography
+
 ```tsx
 <h1 className="text-4xl font-bold">Page Title</h1>
 <h2 className="text-3xl font-bold">Section</h2>
@@ -401,6 +438,7 @@ npm run test -- src/shared/ui
 ```
 
 ### Spacing
+
 - `4px` (px-1): `p-1`, `m-1`, `gap-1`
 - `8px` (px-2): `p-2`, `m-2`, `gap-2`
 - `16px` (px-4): `p-4`, `m-4`, `gap-4`
@@ -446,24 +484,28 @@ npm run type-check
 Every task follows this structured workflow:
 
 ### Phase 1: Analysis
+
 1. Read `.claude/CLAUDE.md` for project context
 2. Identify which FSD layers are affected
 3. Check relevant rule files for requirements
 4. Plan file structure and changes
 
 ### Phase 2: Request Approval
+
 1. Explain changes clearly and concisely
 2. List all files to be modified/created with reasons
 3. Request explicit user approval before proceeding
 4. Allow revisions to the plan if needed
 
 ### Phase 3: Implementation
+
 1. Apply changes following **all project rules**
 2. Update `index.ts` exports in affected layers
 3. Add translation keys if new UI text is introduced
 4. Run `/build-project` validation immediately after
 
 ### Phase 4: Validation
+
 1. ✅ Type checking passes (`npm run type-check`)
 2. ✅ Tests pass with 100% coverage
 3. ✅ Linting passes (`npm run lint`)
@@ -471,6 +513,7 @@ Every task follows this structured workflow:
 5. ✅ No console warnings or errors
 
 ### Phase 5: Reporting
+
 1. Summarize all changes made
 2. List files modified and why
 3. Report code quality metrics
@@ -495,12 +538,14 @@ Every task follows this structured workflow:
 ## 📚 Important Rules
 
 ### FSD Architecture
+
 - ✅ Correct layer placement for every file
 - ✅ Import direction rules strictly enforced
 - ✅ Circular dependencies forbidden
 - ✅ Every layer has `index.ts` public API
 
 ### Naming Conventions
+
 - **Folders:** kebab-case (`buyer-list`, `user-profile`)
 - **Files:** PascalCase (components), camelCase (utils)
 - **Components:** PascalCase (`BuyerList`, `UserCard`)
@@ -508,6 +553,7 @@ Every task follows this structured workflow:
 - **Query keys:** `['entityPlural', params?]` (`['buyers']`, `['buyers', {status: 'active'}]`)
 
 ### Semantic HTML
+
 - ✅ Use native elements: `<button>`, `<a>`, `<nav>`, `<main>`
 - ✅ ARIA only when needed
 - ✅ All images: `alt=""` (even decorative: `alt=""`)
@@ -515,12 +561,14 @@ Every task follows this structured workflow:
 - ✅ Landmarks: `<header role="banner">`, `<main id="main-content">`, `<footer>`
 
 ### TypeScript
+
 - ✅ Strict mode enabled
 - ✅ No `any` type
 - ✅ Proper error types (ApiError, ValidationError)
 - ✅ Generic types properly constrained
 
 ### Git Workflow
+
 - ✅ Conventional commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`
 - ✅ Feature branches: `feature/entity-name`
 - ✅ All tests pass before commit
@@ -531,55 +579,70 @@ Every task follows this structured workflow:
 ## 🚀 Custom Skills
 
 ### `/create-page`
+
 Creates a new NextJS page with proper structure:
+
 ```bash
 /create-page --name about --layout marketing
 ```
+
 Generates: `src/app/[locale]/about/page.tsx` + metadata
 
 ### `/create-entity`
+
 Creates a complete entity (types, API, hooks, widget):
+
 ```bash
 /create-entity --name buyer
 ```
+
 Generates all 5 files + translations
 
 ### `/sync-translations`
+
 Synchronizes translation keys across all language files:
+
 ```bash
 /sync-translations
 ```
+
 Ensures `az.json`, `en.json`, `ru.json` have identical structure
 
 ### `/build-project`
+
 Full validation pipeline:
+
 ```bash
 /build-project
 ```
+
 Runs: Prettier → ESLint → Type check → Tests → Build
 
 ### `/validate-semantic`
+
 Checks semantic HTML compliance:
+
 ```bash
 /validate-semantic
 ```
+
 Verifies WCAG 2.1 AA compliance in components
 
 ---
 
 ## 📝 Key Files Reference
 
-| File | Purpose |
-|------|---------|
-| `src/app/[locale]/layout.tsx` | Root layout + providers |
-| `src/app/middleware.ts` | Locale detection |
-| `src/shared/api/client.ts` | Axios client configuration |
-| `src/shared/api/requests.ts` | Typed request wrappers |
-| `src/shared/api/useApi.ts` | React Query wrappers |
-| `.env.example` | Environment variables template |
-| `next.config.js` | NextJS configuration |
-| `tailwind.config.ts` | Tailwind design system |
-| `jest.config.js` | Testing configuration |
+| File                          | Purpose                        |
+| ----------------------------- | ------------------------------ |
+| `src/app/[locale]/layout.tsx` | Root layout + providers        |
+| `src/app/middleware.ts`       | Locale detection               |
+| `src/shared/api/client.ts`    | Axios client configuration     |
+| `src/shared/api/requests.ts`  | Typed request wrappers         |
+| `src/shared/api/useApi.ts`    | React Query wrappers           |
+| `.env.example`                | Environment variables template |
+| `next.config.js`              | NextJS configuration           |
+| `tailwind.config.ts`          | Tailwind design system         |
+| `jest.config.js`              | Testing configuration          |
 
 ---
 

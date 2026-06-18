@@ -19,6 +19,7 @@ Synchronizes translation keys across all language files to ensure consistency.
 ## Usage Examples
 
 ✅ **With context (helpful):**
+
 ```bash
 /sync-translations added buyer entity with name, email, phone fields
 /sync-translations created login page with admin block message
@@ -26,6 +27,7 @@ Synchronizes translation keys across all language files to ensure consistency.
 ```
 
 ❌ **Without context (I'll run anyway):**
+
 ```bash
 /sync-translations
 ↓
@@ -33,6 +35,7 @@ Me: Running full sync across az.json, en.json, ru.json
 ```
 
 ✅ **Specific namespace (optional):**
+
 ```bash
 /sync-translations BuyersPage
 ↓
@@ -44,6 +47,7 @@ Me: Syncing BuyersPage namespace only
 **You run:** `/sync-translations` (no context)
 
 **I will:**
+
 ```
 ✓ Run full sync across az.json, en.json, ru.json
 ✓ Find all missing keys
@@ -65,12 +69,14 @@ If you want to be more specific:
 After syncing, I will report:
 
 **Changes Made:**
+
 - [ ] Which namespaces were added?
 - [ ] Which keys were added?
 - [ ] How many keys per language file?
 - [ ] Which files needed updates?
 
 **Next Steps:**
+
 - [ ] Should I translate the keys now? (to which languages first?)
 - [ ] Are TRANSLATE_ME placeholders OK, or provide translations?
 - [ ] Any special keys needing context-specific translations?
@@ -88,6 +94,7 @@ After syncing, I will report:
 ## Example
 
 ### Before
+
 ```json
 // messages/az.json
 {
@@ -110,6 +117,7 @@ After syncing, I will report:
 ```
 
 ### After Running `/sync-translations`
+
 ```json
 // messages/az.json (unchanged)
 {
@@ -167,6 +175,7 @@ Changes Made:
 ## Integration
 
 Typically run:
+
 - After `/create-entity` (automatically adds translation namespace)
 - Before committing changes that add new `useTranslations()` calls
 - In `/build-project` validation step

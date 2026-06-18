@@ -20,6 +20,7 @@ Creates a new NextJS page with proper FSD structure, metadata, and security.
 ## Usage Examples
 
 ✅ **Full (with context):**
+
 ```bash
 /create-page login users can login here, admins are blocked from this page
 /create-page dashboard only authenticated users see this, shows user statistics
@@ -28,6 +29,7 @@ Creates a new NextJS page with proper FSD structure, metadata, and security.
 ```
 
 ❌ **Incomplete (missing context):**
+
 ```bash
 /create-page dashboard
 ↓
@@ -38,6 +40,7 @@ Me: I need more info!
 ```
 
 ✅ **Minimal (just name, I'll ask):**
+
 ```bash
 /create-page settings
 ↓
@@ -68,6 +71,7 @@ Once provided, I proceed with detailed questions.
 After you provide page name + context, I will ask:
 
 **Access Control & Authentication:**
+
 - [ ] Who can access this page? (public? authenticated? admin-only? role-based?)
 - [ ] How do we check authorization? (role field? permissions array? token claim?)
 - [ ] What happens if unauthorized? (redirect to login? show 403? blank page?)
@@ -75,6 +79,7 @@ After you provide page name + context, I will ask:
 - [ ] Is this a protected route? (auth required in middleware?)
 
 **Data & API:**
+
 - [ ] What data does this page need? (on page load?)
 - [ ] Which endpoint(s)? (/api/v1/[resource]?)
 - [ ] Should data load immediately or on user action?
@@ -83,6 +88,7 @@ After you provide page name + context, I will ask:
 - [ ] Real-time updates needed? (websocket? polling?)
 
 **UI & Components:**
+
 - [ ] What layout? (sidebar? header? full-width?)
 - [ ] Main sections? (list view? detail view? form? tabs?)
 - [ ] What widgets/components are needed?
@@ -90,6 +96,7 @@ After you provide page name + context, I will ask:
 - [ ] Bulk actions? (delete multiple? export?)
 
 **States & UX:**
+
 - [ ] Loading state appearance? (skeleton? spinner? placeholder?)
 - [ ] Empty state? (when no data, what message?)
 - [ ] Error state? (failed to load, how to recover?)
@@ -97,6 +104,7 @@ After you provide page name + context, I will ask:
 - [ ] Confirmation dialogs? (delete confirmation? leave unsaved changes?)
 
 **Forms & Input (if applicable):**
+
 - [ ] Form fields? (input types, validation?)
 - [ ] Required vs optional fields?
 - [ ] Form submission? (create? update? delete?)
@@ -104,6 +112,7 @@ After you provide page name + context, I will ask:
 - [ ] Error display? (field-level? form-level?)
 
 **Performance & Special Features:**
+
 - [ ] Need pagination? (page size? server-side or client-side?)
 - [ ] Search/autocomplete? (debounced? dropdown? modal?)
 - [ ] Sorting capability? (by which columns?)
@@ -113,12 +122,14 @@ After you provide page name + context, I will ask:
 - [ ] Mobile responsive? (changes on mobile?)
 
 **i18n & Localization:**
+
 - [ ] All labels/buttons translated?
 - [ ] Error messages translated?
 - [ ] Date/number formatting by locale?
 - [ ] RTL support needed?
 
 **SEO & Metadata:**
+
 - [ ] Dynamic page title? (based on data?)
 - [ ] Meta description? (indexed by search?)
 - [ ] Open Graph tags? (for sharing?)
@@ -150,28 +161,29 @@ src/messages/[locale].json
 ## Generated Code
 
 ### page.tsx
+
 ```tsx
-import { useTranslations } from 'next-intl';
-import { Metadata } from 'next';
+import { useTranslations } from "next-intl";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Buyers',
-  description: 'Manage all buyers in your system',
+  title: "Buyers",
+  description: "Manage all buyers in your system",
   openGraph: {
-    title: 'Buyers',
-    description: 'Manage all buyers in your system',
-    type: 'website',
+    title: "Buyers",
+    description: "Manage all buyers in your system",
+    type: "website",
   },
 };
 
 export default function BuyersPage() {
-  const t = useTranslations('BuyersPage');
+  const t = useTranslations("BuyersPage");
 
   return (
     <main id="main-content" className="container mx-auto py-8">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold">{t('title')}</h1>
-        <p className="text-slate-600">{t('description')}</p>
+        <h1 className="text-4xl font-bold">{t("title")}</h1>
+        <p className="text-slate-600">{t("description")}</p>
       </header>
 
       {/* Page content goes here */}
@@ -181,6 +193,7 @@ export default function BuyersPage() {
 ```
 
 ### layout.tsx (if nested)
+
 ```tsx
 export default function AdminLayout({
   children,
@@ -199,8 +212,9 @@ export default function AdminLayout({
 ```
 
 ### loading.tsx (optional)
+
 ```tsx
-import { Skeleton } from '@/shared/ui';
+import { Skeleton } from "@/shared/ui";
 
 export default function LoadingPage() {
   return (
@@ -231,16 +245,16 @@ For dynamic pages like `/products/[id]`:
 
 ```tsx
 // src/app/[locale]/products/[id]/page.tsx
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 interface ProductPageProps {
   params: { id: string };
 }
 
-export async function generateMetadata(
-  { params }: ProductPageProps
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
   // Fetch product and generate dynamic metadata
   const product = await fetch(`/api/products/${params.id}`);
   return {
@@ -266,24 +280,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
 ## SEO Best Practices Applied
 
 ✅ **Metadata:**
+
 - Unique `title` and `description`
 - Open Graph tags
 - Canonical URL
 - Proper lang attribute
 
 ✅ **Semantic HTML:**
+
 - Single `<h1>` per page
 - Proper heading hierarchy
 - Skip navigation link
 - Landmark elements
 
 ✅ **Accessibility:**
+
 - `id="main-content"` for focus management
 - `tabIndex={-1}` on main
 - ARIA labels where needed
 - Keyboard navigation support
 
 ✅ **Performance:**
+
 - Code splitting by route
 - Lazy loading components
 - Metadata streaming

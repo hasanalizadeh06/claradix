@@ -9,14 +9,14 @@ Claradix uses a **layered API architecture** for clean separation of concerns, t
 **Purpose:** Centralized HTTP client configuration.
 
 ```ts
-import axios from 'axios';
-import { getAuthToken, setAuthToken, refreshToken } from '@/shared/config/auth';
+import axios from "axios";
+import { getAuthToken, setAuthToken, refreshToken } from "@/shared/config/auth";
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
   timeout: 15000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -50,13 +50,14 @@ apiClient.interceptors.response.use(
       return apiClient.request(error.config);
     }
     throw normalizeError(error);
-  }
+  },
 );
 
 export default apiClient;
 ```
 
 **Rules:**
+
 - ✅ Base URL configured here
 - ✅ Timeout set to reasonable value (15s)
 - ✅ Request interceptor adds `Authorization` header automatically
@@ -71,12 +72,12 @@ export default apiClient;
 **Purpose:** Generic, typed wrapper functions for all HTTP methods.
 
 ```ts
-import apiClient from './client';
-import type { AxiosRequestConfig } from 'axios';
+import apiClient from "./client";
+import type { AxiosRequestConfig } from "axios";
 
 export async function apiGet<T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   const { data } = await apiClient.get<T>(url, config);
   return data;
@@ -85,7 +86,7 @@ export async function apiGet<T>(
 export async function apiPost<T, D = unknown>(
   url: string,
   body: D,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   const { data } = await apiClient.post<T>(url, body, config);
   return data;
@@ -94,7 +95,7 @@ export async function apiPost<T, D = unknown>(
 export async function apiPut<T, D = unknown>(
   url: string,
   body: D,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   const { data } = await apiClient.put<T>(url, body, config);
   return data;
@@ -102,7 +103,7 @@ export async function apiPut<T, D = unknown>(
 
 export async function apiDelete<T>(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   const { data } = await apiClient.delete<T>(url, config);
   return data;
@@ -111,7 +112,7 @@ export async function apiDelete<T>(
 export async function apiPatch<T, D = unknown>(
   url: string,
   body: D,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> {
   const { data } = await apiClient.patch<T>(url, body, config);
   return data;
@@ -119,6 +120,7 @@ export async function apiPatch<T, D = unknown>(
 ```
 
 **Rules:**
+
 - ✅ Generic types properly constrained
 - ✅ Returns `response.data` directly (not full response)
 - ✅ Used ONLY in `entities/*/api/` layer
@@ -131,17 +133,17 @@ export async function apiPatch<T, D = unknown>(
 **Purpose:** Global React Query defaults and client setup.
 
 ```ts
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient } from "@tanstack/react-query";
 
 export function createQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 1000 * 60 * 5, // 5 minutes
-        gcTime: 1000 * 60 * 10,   // 10 minutes
+        gcTime: 1000 * 60 * 10, // 10 minutes
         retry: (failureCount, error) => {
           // Only retry GET requests (idempotent)
-          const isIdempotent = error?.config?.method?.toLowerCase() === 'get';
+          const isIdempotent = error?.config?.method?.toLowerCase() === "get";
           return isIdempotent && failureCount < 3;
         },
         refetchOnWindowFocus: true,
@@ -157,6 +159,7 @@ export const queryClient = createQueryClient();
 ```
 
 **Rules:**
+
 - ✅ `staleTime` set appropriately
 - ✅ Retry ONLY for GET requests
 - ✅ NO auto-retry for mutations (POST/PUT/DELETE)
@@ -170,8 +173,13 @@ export const queryClient = createQueryClient();
 **Purpose:** Standard hooks wrapping React Query's object API.
 
 ```tsx
-import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
+import {
+  useQuery,
+  useMutation,
+  type UseQueryOptions,
+  type UseMutationOptions,
+} from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 
 export type ApiError = {
   message: string;
@@ -182,7 +190,7 @@ export type ApiError = {
 export function useApiQuery<TData = unknown, TError = ApiError>(
   queryKey: (string | number | object)[],
   queryFn: () => Promise<TData>,
-  options?: UseQueryOptions<TData, TError>
+  options?: UseQueryOptions<TData, TError>,
 ) {
   return useQuery<TData, TError>({
     queryKey,
@@ -194,10 +202,10 @@ export function useApiQuery<TData = unknown, TError = ApiError>(
 export function useApiMutation<
   TData = unknown,
   TError = ApiError,
-  TVariables = unknown
+  TVariables = unknown,
 >(
   mutationFn: (variables: TVariables) => Promise<TData>,
-  options?: UseMutationOptions<TData, TError, TVariables>
+  options?: UseMutationOptions<TData, TError, TVariables>,
 ) {
   return useMutation<TData, TError, TVariables>({
     mutationFn,
@@ -207,6 +215,7 @@ export function useApiMutation<
 ```
 
 **Rules:**
+
 - ✅ Always used instead of raw `useQuery`/`useMutation`
 - ✅ Generic types properly constrained
 - ✅ Error type is normalized `ApiError`
@@ -220,28 +229,27 @@ export function useApiMutation<
 
 ```ts
 // entities/buyer/api/buyerApi.ts
-import { apiGet, apiPost, apiPut, apiDelete } from '@/shared/api/requests';
-import type { Buyer, CreateBuyerDto, UpdateBuyerDto } from '../model/types';
+import { apiGet, apiPost, apiPut, apiDelete } from "@/shared/api/requests";
+import type { Buyer, CreateBuyerDto, UpdateBuyerDto } from "../model/types";
 
 export const buyerApi = {
   getBuyers: (params?: { status?: string; limit?: number }) =>
-    apiGet<Buyer[]>('/buyer', { params }),
+    apiGet<Buyer[]>("/buyer", { params }),
 
-  getBuyerById: (id: string) =>
-    apiGet<Buyer>(`/buyer/${id}`),
+  getBuyerById: (id: string) => apiGet<Buyer>(`/buyer/${id}`),
 
   createBuyer: (data: CreateBuyerDto) =>
-    apiPost<Buyer, CreateBuyerDto>('/buyer', data),
+    apiPost<Buyer, CreateBuyerDto>("/buyer", data),
 
   updateBuyer: (id: string, data: UpdateBuyerDto) =>
     apiPut<Buyer, UpdateBuyerDto>(`/buyer/${id}`, data),
 
-  deleteBuyer: (id: string) =>
-    apiDelete<void>(`/buyer/${id}`),
+  deleteBuyer: (id: string) => apiDelete<void>(`/buyer/${id}`),
 };
 ```
 
 **Rules:**
+
 - ✅ Only uses typed request wrappers (Layer 2)
 - ✅ Never uses raw `apiClient.get/post`
 - ✅ Properly typed return values and parameters
@@ -256,39 +264,37 @@ export const buyerApi = {
 
 ```tsx
 // features/buyer-list/api/useBuyers.ts
-import { useApiQuery } from '@/shared/api/useApi';
-import { buyerApi } from '@/entities/buyer/api/buyerApi';
-import type { Buyer } from '@/entities/buyer/model/types';
+import { useApiQuery } from "@/shared/api/useApi";
+import { buyerApi } from "@/entities/buyer/api/buyerApi";
+import type { Buyer } from "@/entities/buyer/model/types";
 
 export function useBuyers(params?: { status?: string; limit?: number }) {
   return useApiQuery<Buyer[], unknown>(
-    ['buyers', params], // Query key includes params for cache busting
+    ["buyers", params], // Query key includes params for cache busting
     () => buyerApi.getBuyers(params),
     {
       enabled: true, // Always enabled
-    }
+    },
   );
 }
 
 // features/create-buyer/api/useCreateBuyer.ts
-import { useApiMutation } from '@/shared/api/useApi';
-import { buyerApi } from '@/entities/buyer/api/buyerApi';
-import type { CreateBuyerDto } from '@/entities/buyer/model/types';
+import { useApiMutation } from "@/shared/api/useApi";
+import { buyerApi } from "@/entities/buyer/api/buyerApi";
+import type { CreateBuyerDto } from "@/entities/buyer/model/types";
 
 export function useCreateBuyer() {
-  return useApiMutation(
-    (data: CreateBuyerDto) => buyerApi.createBuyer(data),
-    {
-      onSuccess: (data) => {
-        // Invalidate buyers list after creation
-        queryClient.invalidateQueries({ queryKey: ['buyers'] });
-      },
-    }
-  );
+  return useApiMutation((data: CreateBuyerDto) => buyerApi.createBuyer(data), {
+    onSuccess: (data) => {
+      // Invalidate buyers list after creation
+      queryClient.invalidateQueries({ queryKey: ["buyers"] });
+    },
+  });
 }
 ```
 
 **Rules:**
+
 - ✅ Query keys: `['entityPlural', params?]`
 - ✅ Query keys always deterministic and serializable
 - ✅ Uses `useApiQuery`/`useApiMutation` (never raw hooks)
@@ -302,30 +308,30 @@ export function useCreateBuyer() {
 **Purpose:** Client component consuming feature hooks.
 
 ```tsx
-'use client';
+"use client";
 
-import { useBuyers } from '@/features/buyer-list';
-import { BuyerCard } from '@/entities/buyer/ui/BuyerCard';
-import { Loading, Error } from '@/shared/ui';
-import { useTranslations } from 'next-intl';
+import { useBuyers } from "@/features/buyer-list";
+import { BuyerCard } from "@/entities/buyer/ui/BuyerCard";
+import { Loading, Error } from "@/shared/ui";
+import { useTranslations } from "next-intl";
 
 export function BuyersWidget() {
-  const t = useTranslations('BuyersWidget');
+  const t = useTranslations("BuyersWidget");
   const { data, isLoading, error } = useBuyers();
 
   // Handle all states
   if (isLoading) return <Loading />;
-  
+
   if (error) {
     // Error is already normalized to ApiError by Layer 1
     return <Error message={String((error as any)?.message)} />;
   }
-  
-  if (!data?.length) return <p>{t('noData')}</p>;
+
+  if (!data?.length) return <p>{t("noData")}</p>;
 
   return (
     <div className="grid gap-4">
-      {data.map(buyer => (
+      {data.map((buyer) => (
         <BuyerCard key={buyer.id} buyer={buyer} />
       ))}
     </div>
@@ -334,6 +340,7 @@ export function BuyersWidget() {
 ```
 
 **Rules:**
+
 - ✅ `'use client'` directive at top
 - ✅ Uses feature hooks (Layer 6)
 - ✅ Handles all states: loading, error, empty, data
@@ -399,45 +406,54 @@ onSuccess: () => queryClient.invalidateQueries({ queryKey: ['buyers'] }),
 ## 📊 Adding a New Endpoint: Step-by-Step
 
 ### 1. Define Entity Types (`entities/buyer/model/types.ts`)
+
 ```ts
-export interface Buyer { id: string; name: string; }
-export type CreateBuyerDto = Omit<Buyer, 'id'>;
+export interface Buyer {
+  id: string;
+  name: string;
+}
+export type CreateBuyerDto = Omit<Buyer, "id">;
 ```
 
 ### 2. Create Entity API (`entities/buyer/api/buyerApi.ts`)
+
 ```ts
 export const buyerApi = {
-  getBuyers: () => apiGet<Buyer[]>('/buyer'),
-  createBuyer: (data: CreateBuyerDto) => apiPost<Buyer>('/buyer', data),
+  getBuyers: () => apiGet<Buyer[]>("/buyer"),
+  createBuyer: (data: CreateBuyerDto) => apiPost<Buyer>("/buyer", data),
 };
 ```
 
 ### 3. Create Feature Hook (`features/buyer-list/api/useBuyers.ts`)
+
 ```ts
 export const useBuyers = () =>
-  useApiQuery<Buyer[]>(['buyers'], buyerApi.getBuyers);
+  useApiQuery<Buyer[]>(["buyers"], buyerApi.getBuyers);
 ```
 
 ### 4. Export from layer `index.ts` files
+
 ```ts
 // entities/buyer/index.ts
-export { type Buyer } from './model/types';
-export { buyerApi } from './api/buyerApi';
+export { type Buyer } from "./model/types";
+export { buyerApi } from "./api/buyerApi";
 
 // features/buyer-list/index.ts
-export { useBuyers } from './api/useBuyers';
+export { useBuyers } from "./api/useBuyers";
 ```
 
 ### 5. Create UI Widget (`widgets/buyer-list-widget/ui/BuyerListWidget.tsx`)
+
 ```tsx
-'use client';
+"use client";
 const { data, isLoading, error } = useBuyers();
 // Handle states and render...
 ```
 
 ### 6. Use in Page (`app/[locale]/buyers/page.tsx`)
+
 ```tsx
-import { BuyerListWidget } from '@/widgets/buyer-list-widget';
+import { BuyerListWidget } from "@/widgets/buyer-list-widget";
 export default function Page() {
   return <BuyerListWidget />;
 }

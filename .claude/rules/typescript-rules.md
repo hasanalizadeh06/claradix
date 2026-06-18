@@ -10,11 +10,11 @@ Claradix enforces **strict TypeScript** mode for type safety across the entire c
 
 ```ts
 // ❌ WRONG
-const response: any = await apiClient.get('/data');
+const response: any = await apiClient.get("/data");
 const value: any = data;
 
 // ✅ CORRECT
-const response: Buyer[] = await apiGet<Buyer[]>('/buyer');
+const response: Buyer[] = await apiGet<Buyer[]>("/buyer");
 const value: string = data as string;
 ```
 
@@ -22,18 +22,19 @@ const value: string = data as string;
 
 ```ts
 // ❌ WRONG
-const users = [];  // type: any[]
+const users = []; // type: any[]
 
 // ✅ CORRECT
 const users: Buyer[] = [];
-const users = fetchBuyers();  // Inferred from return type
+const users = fetchBuyers(); // Inferred from return type
 ```
 
 ### No Implicit `any`
 
 ```ts
 // ❌ WRONG
-function processData(data) {  // data: any
+function processData(data) {
+  // data: any
   return data.name;
 }
 
@@ -72,7 +73,7 @@ interface VipBuyer extends Buyer {
 
 ```ts
 // ✅ CORRECT
-type BuyerStatus = 'active' | 'inactive' | 'suspended';
+type BuyerStatus = "active" | "inactive" | "suspended";
 
 type ApiResponse<T> = {
   data: T;
@@ -81,9 +82,9 @@ type ApiResponse<T> = {
 
 // ✅ CORRECT: Discriminated union
 type Result<T> =
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: Error }
-  | { status: 'loading' };
+  | { status: "success"; data: T }
+  | { status: "error"; error: Error }
+  | { status: "loading" };
 ```
 
 ### DTOs (Data Transfer Objects)
@@ -100,7 +101,10 @@ interface UpdateBuyerDto extends Partial<CreateBuyerDto> {
 }
 
 // Usage
-const buyer = await buyerApi.createBuyer({ name: 'John', email: 'john@example.com' });
+const buyer = await buyerApi.createBuyer({
+  name: "John",
+  email: "john@example.com",
+});
 ```
 
 ---
@@ -112,7 +116,7 @@ const buyer = await buyerApi.createBuyer({ name: 'John', email: 'john@example.co
 ```ts
 // ❌ WRONG
 interface Buyer {
-  id: string | null;  // Why could ID be null?
+  id: string | null; // Why could ID be null?
   email: string | null;
 }
 
@@ -120,12 +124,12 @@ interface Buyer {
 interface Buyer {
   id: string;
   email: string;
-  phone?: string;  // Optional
+  phone?: string; // Optional
 }
 
 // ✅ CORRECT: For API responses where data may not exist
 interface BuyerResponse {
-  buyer: Buyer | null;  // Explicit nullable
+  buyer: Buyer | null; // Explicit nullable
 }
 ```
 
@@ -134,17 +138,17 @@ interface BuyerResponse {
 ```ts
 // ❌ WRONG: Mixing optional and null
 type Data = {
-  value?: string | null;  // Ambiguous
+  value?: string | null; // Ambiguous
 };
 
 // ✅ CORRECT: Use optional when value may not exist
 type Data = {
-  value?: string;  // undefined if not provided
+  value?: string; // undefined if not provided
 };
 
 // ✅ CORRECT: Use null for explicit absence
 type Response = {
-  data: string | null;  // null if API returns no data
+  data: string | null; // null if API returns no data
 };
 ```
 
@@ -152,15 +156,15 @@ type Response = {
 
 ```ts
 // ✅ CORRECT
-const name = buyer?.name ?? 'Unknown';
-const email = buyer?.contact?.email ?? '';
+const name = buyer?.name ?? "Unknown";
+const email = buyer?.contact?.email ?? "";
 
 // ✅ CORRECT: Non-null assertion (only when 100% certain)
-const email = buyer!.email;  // Asserts buyer is not null
+const email = buyer!.email; // Asserts buyer is not null
 
 // ❌ WRONG: Without optional chaining
-const name = buyer.name;  // Error if buyer is null!
-const email = buyer.contact.email;  // Error if contact is null!
+const name = buyer.name; // Error if buyer is null!
+const email = buyer.contact.email; // Error if contact is null!
 ```
 
 ---
@@ -172,7 +176,7 @@ const email = buyer.contact.email;  // Error if contact is null!
 ```ts
 // ✅ CORRECT: Constrained generic
 function formatList<T extends { toString(): string }>(items: T[]): string {
-  return items.map(item => item.toString()).join(', ');
+  return items.map((item) => item.toString()).join(", ");
 }
 
 // ✅ CORRECT: React generic
@@ -182,7 +186,8 @@ interface ComponentProps<T> {
 }
 
 // ❌ WRONG: Uncons trained generic
-function processData<T>(data: T): T {  // Too loose, T could be anything
+function processData<T>(data: T): T {
+  // Too loose, T could be anything
   return data;
 }
 ```
@@ -224,7 +229,7 @@ interface ApiError {
 // ✅ CORRECT: In try-catch
 async function loadBuyers() {
   try {
-    return await apiGet<Buyer[]>('/buyer');
+    return await apiGet<Buyer[]>("/buyer");
   } catch (error) {
     const apiError = error as ApiError;
     console.error(`Error: ${apiError.message}`);
@@ -236,7 +241,7 @@ async function loadBuyers() {
 try {
   // ...
 } catch (error) {
-  console.error(error);  // error: unknown
+  console.error(error); // error: unknown
 }
 ```
 
@@ -245,8 +250,8 @@ try {
 ```ts
 // ✅ CORRECT
 const { data, error } = useApiQuery<Buyer[], ApiError>(
-  ['buyers'],
-  buyerApi.getBuyers
+  ["buyers"],
+  buyerApi.getBuyers,
 );
 
 if (error) {
@@ -256,7 +261,7 @@ if (error) {
 
 // ❌ WRONG: Unsafe error access
 if (error) {
-  console.error(error.unknownProperty);  // Type error!
+  console.error(error.unknownProperty); // Type error!
 }
 ```
 
@@ -268,32 +273,32 @@ if (error) {
 
 ```ts
 // ✅ CORRECT
-export type { Buyer, CreateBuyerDto } from './types';
-export { buyerApi } from './api';
+export type { Buyer, CreateBuyerDto } from "./types";
+export { buyerApi } from "./api";
 
 // ✅ CORRECT: Re-export from index
-export type { Buyer } from './model/types';
-export { buyerApi } from './api/buyerApi';
+export type { Buyer } from "./model/types";
+export { buyerApi } from "./api/buyerApi";
 
 // ❌ WRONG: Default export
-export default { buyerApi };  // Avoid for FSD
+export default { buyerApi }; // Avoid for FSD
 
 // ❌ WRONG: Mixing type and value exports
-export { Buyer, buyerApi };  // Confusing, separate them
+export { Buyer, buyerApi }; // Confusing, separate them
 ```
 
 ### Type-Only Imports
 
 ```ts
 // ✅ CORRECT: Signals to bundler that import is removed
-import type { Buyer } from '@/entities/buyer';
+import type { Buyer } from "@/entities/buyer";
 
 // ✅ CORRECT: Mixed import
-import { buyerApi } from '@/entities/buyer';
-import type { Buyer } from '@/entities/buyer/model/types';
+import { buyerApi } from "@/entities/buyer";
+import type { Buyer } from "@/entities/buyer/model/types";
 
 // ❌ WRONG: No distinction
-import { buyerApi, Buyer } from '@/entities/buyer';  // Harder to optimize
+import { buyerApi, Buyer } from "@/entities/buyer"; // Harder to optimize
 ```
 
 ---
@@ -334,8 +339,8 @@ type BuyersResult = Awaited<ReturnType<typeof buyerApi.getBuyers>>;
 // ✅ CORRECT: Conditional type
 type IsString<T> = T extends string ? true : false;
 
-type X = IsString<'hello'>;  // true
-type Y = IsString<number>;   // false
+type X = IsString<"hello">; // true
+type Y = IsString<number>; // false
 
 // ✅ CORRECT: Extract matching types
 type ResponseTypes = {
@@ -345,7 +350,7 @@ type ResponseTypes = {
 };
 
 type ExtractArrayTypes<T> = T extends Array<infer U> ? U : never;
-type BuyerType = ExtractArrayTypes<ResponseTypes['list']>;  // Buyer
+type BuyerType = ExtractArrayTypes<ResponseTypes["list"]>; // Buyer
 ```
 
 ---
