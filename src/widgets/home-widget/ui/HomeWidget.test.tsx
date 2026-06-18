@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import HomePage from './page';
+import { HomeWidget } from './HomeWidget';
 
 // Mock next-intl
 jest.mock('next-intl', () => ({
@@ -18,47 +18,47 @@ jest.mock('next-intl', () => ({
   },
 }));
 
-describe('HomePage', () => {
+describe('HomeWidget', () => {
   it('renders the main heading', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const heading = screen.getByRole('heading', { level: 1 });
     expect(heading).toBeInTheDocument();
     expect(heading).toHaveTextContent('Welcome to Claradix');
   });
 
   it('renders the subtitle', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const subtitle = screen.getByText(/Modern, accessible, and high-performance/i);
     expect(subtitle).toBeInTheDocument();
   });
 
   it('renders the description section', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const description = screen.getByText(/Claradix is a modern frontend application/i);
     expect(description).toBeInTheDocument();
   });
 
   it('renders all features', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     expect(screen.getByText('Fast and optimized')).toBeInTheDocument();
     expect(screen.getByText('Accessible and semantic')).toBeInTheDocument();
     expect(screen.getByText('Type-safe and secure')).toBeInTheDocument();
   });
 
   it('renders footer text', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const footer = screen.getByText(/Made with care by the Claradix team/i);
     expect(footer).toBeInTheDocument();
   });
 
   it('has main content area with id', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const main = screen.getByRole('main');
     expect(main).toHaveAttribute('id', 'main-content');
   });
 
   it('renders semantic HTML structure', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const main = screen.getByRole('main');
     const header = main.querySelector('header');
     const section = main.querySelector('section');
@@ -70,7 +70,7 @@ describe('HomePage', () => {
   });
 
   it('has proper heading hierarchy', () => {
-    render(<HomePage />);
+    render(<HomeWidget />);
     const h1 = screen.getByRole('heading', { level: 1 });
     expect(h1).toBeInTheDocument();
 
