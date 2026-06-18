@@ -1,28 +1,115 @@
 ---
 name: build-project
 description: Full validation pipeline (Prettier, ESLint, TypeCheck, Tests, Build)
-argument-hint: "Optional: --skip-tests, --skip-build for quick validation"
+argument-hint: "Optional: context (e.g., 'before deployment' or '--skip-tests for quick check')"
 ---
 
 # /build-project
 
-Runs comprehensive validation pipeline before deployment or committing.
+Runs comprehensive validation pipeline: format → lint → type-check → tests → build.
 
-## Usage
+## Format
 
 ```bash
-# Full validation
-/build-project
-
-# Skip tests for quick check
-/build-project --skip-tests
-
-# Skip build (for pre-commit quick check)
-/build-project --skip-build
-
-# Only lint and format
-/build-project --only-lint
+/build-project [optional: flags or context]
 ```
+
+**Flags (optional):**
+- `--skip-tests` → Skip test execution (faster)
+- `--skip-build` → Skip final build (still checks tests)
+- `--only-lint` → Only format and lint (skip type-check, tests, build)
+
+**Context (optional):**
+- `before deployment` → Full validation
+- `quick check` → Skip expensive steps
+- `pre-commit` → Skip build, keep tests
+
+## Usage Examples
+
+✅ **Full validation (deployment):**
+```bash
+/build-project before deployment
+↓ Runs: Prettier → ESLint → TypeCheck → Tests → Build
+```
+
+✅ **Quick check (during development):**
+```bash
+/build-project --skip-tests
+↓ Runs: Prettier → ESLint → TypeCheck → (skip tests) → Build
+```
+
+✅ **Pre-commit validation:**
+```bash
+/build-project pre-commit
+↓ Runs: Prettier → ESLint → TypeCheck → Tests (no build)
+```
+
+✅ **Minimal check:**
+```bash
+/build-project --only-lint
+↓ Runs: Prettier → ESLint (skip type-check, tests, build)
+```
+
+❌ **No arguments (runs full):**
+```bash
+/build-project
+↓ Runs complete pipeline: all 5 steps
+```
+
+## If Arguments Are Missing
+
+**You run:** `/build-project` (no flags or context)
+
+**I will:**
+```
+✓ Run FULL validation pipeline (all 5 steps)
+✓ Report any failures
+✓ Summary of overall status
+```
+
+If you want specific behavior:
+
+```
+✓ What's your goal?
+  → Quick check during development
+  → Pre-commit validation
+  → Deployment verification
+  → Something else?
+```
+
+---
+
+## Questions I Will Ask
+
+After validation completes, I will report:
+
+**Formatting & Linting:**
+- [ ] Were files reformatted? (how many?)
+- [ ] Were lint issues fixed automatically?
+- [ ] Are there remaining lint errors?
+
+**Type Safety:**
+- [ ] Type check passed?
+- [ ] Any type errors to fix?
+- [ ] Any type warnings?
+
+**Tests:**
+- [ ] All tests passing?
+- [ ] Coverage at 100%?
+- [ ] Which tests failed (if any)?
+
+**Build:**
+- [ ] Build succeeded?
+- [ ] Bundle size OK? (<250KB gzipped?)
+- [ ] Any build warnings?
+
+**Summary & Next Steps:**
+- [ ] Is code ready for commit?
+- [ ] Is code ready for deployment?
+- [ ] What needs to be fixed?
+- [ ] Should we commit/push now?
+
+---
 
 ## Validation Pipeline
 
