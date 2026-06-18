@@ -182,6 +182,21 @@ export function HomePage() {
 }
 ```
 
+### Translation Key Structure
+```json
+{
+  "HomePage": {
+    "title": "Welcome to Claradix",
+    "description": "Modern, accessible frontend",
+    "features": {
+      "fast": "Fast",
+      "secure": "Secure",
+      "accessible": "Accessible"
+    }
+  }
+}
+```
+
 ### Adding New Strings
 Use the `/sync-translations` skill:
 ```bash
@@ -189,6 +204,124 @@ Use the `/sync-translations` skill:
 # Scans for missing keys across all language files
 # Adds missing keys to incomplete language files
 # Keeps JSON structure consistent
+```
+
+### Single-to-Multilanguage Conversion (4-Step Process)
+
+When converting existing page to multilingual:
+
+**Step 1: Project Support Check**
+```bash
+✅ Verify:
+  - ./messages/ directory exists (az.json, en.json, ru.json)
+  - next-intl package installed
+  - i18n config present
+```
+
+**Step 2: File Analysis**
+- Identify all hardcoded text strings in `.tsx` file
+- Note HTML content that needs `dangerouslySetInnerHTML`
+- List all user-facing text
+
+**Step 3: Update Translation Files**
+```json
+// messages/az.json
+{
+  "PageName": {
+    "title": "Azərbaycanca başlıq",
+    "description": "Azərbaycanca təsvir"
+  }
+}
+
+// messages/en.json
+{
+  "PageName": {
+    "title": "English Title",
+    "description": "English Description"
+  }
+}
+
+// messages/ru.json
+{
+  "PageName": {
+    "title": "Русский заголовок",
+    "description": "Русское описание"
+  }
+}
+```
+
+**Step 4: Transform TSX File**
+```tsx
+'use client';
+import { useTranslations } from 'next-intl';
+
+export function Page() {
+  const t = useTranslations('PageName');
+  
+  return (
+    <main>
+      <h1>{t('title')}</h1>
+      <p>{t('description')}</p>
+      
+      {/* For HTML content, use dangerouslySetInnerHTML + t.raw() */}
+      <div dangerouslySetInnerHTML={{ __html: t.raw('richContent') }} />
+    </main>
+  );
+}
+```
+
+### HTML Content in Translations
+```json
+{
+  "PageName": {
+    "richContent": "<strong>Bold text</strong> and <em>emphasized</em>"
+  }
+}
+```
+
+```tsx
+// Use t.raw() + dangerouslySetInnerHTML
+<div dangerouslySetInnerHTML={{ __html: t.raw('richContent') }} />
+
+// NOT this:
+<div>{t('richContent')}</div>  // ❌ Would render HTML as text
+```
+
+### next-intl API Methods
+```tsx
+const t = useTranslations('Namespace');
+
+// Simple translation
+t('key')
+
+// With interpolation
+t('message', { name: 'John' })  // "Hello {name}" → "Hello John"
+
+// Raw HTML (needs dangerouslySetInnerHTML)
+t.raw('richKey')
+
+// Rich components
+t.rich('formatted', {
+  bold: chunks => <strong>{chunks}</strong>
+})
+
+// Default value
+t('nonexistent', 'default text')
+```
+
+### Missing Key Handling
+Add placeholder to `messages/[locale].json` when key is missing:
+```json
+{
+  "Namespace": {
+    "missingKey": "TRANSLATE_ME"
+  }
+}
+```
+
+Always sync after adding new strings:
+```bash
+/sync-translations
 ```
 
 ---
