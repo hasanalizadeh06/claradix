@@ -17,8 +17,6 @@ Modern, accessible, and high-performance NextJS frontend application with Featur
 
 ## 📖 Documentation
 
-See [.claude/CLAUDE.md](.claude/CLAUDE.md) for complete project documentation.
-
 **Key Rules:**
 - [FSD Architecture](.claude/rules/fsd-architecture.md)
 - [API Architecture](.claude/rules/api-architecture.md)
