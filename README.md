@@ -52,25 +52,6 @@ npm run type-check
 # Run tests
 npm run test
 npm run test:coverage
-
-# Full validation before commit
-/build-project
-```
-
-## 🎯 Custom Commands
-
-```bash
-# Create new entity (types + API + hooks + widget)
-/create-entity product
-
-# Create new page
-/create-page products
-
-# Sync translations across all languages
-/sync-translations
-
-# Full build validation
-/build-project
 ```
 
 ## 📁 Project Structure
@@ -82,12 +63,6 @@ src/
 ├── features/              # User actions & features
 ├── entities/              # Business logic entities
 └── shared/                # Reusable code (UI, API, utils)
-
-.claude/
-├── CLAUDE.md             # Complete project guide
-├── settings.json         # Configuration
-├── rules/                # Project rules (FSD, API, etc.)
-└── skills/               # Custom commands
 ```
 
 ## 🔒 Key Principles
@@ -132,5 +107,3 @@ Supported languages: Azerbaijani (az), English (en), Russian (ru)
 - [WCAG 2.1](https://www.w3.org/WAI/WCAG21/)
 
 ---
-
-**Built with ❤️ using NextJS, TypeScript, and Claude Code**

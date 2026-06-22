@@ -28,10 +28,10 @@ function getLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Skip middleware for non-page routes
+  // Skip proxy for non-page routes
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
